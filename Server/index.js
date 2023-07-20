@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const connectDb = require('./db/conn'); // Assurez-vous que le chemin vers le fichier conn.js est correct
 
 const Patient = require('./routes/api/patient')
 const Admin = require('./routes/api/admin')
@@ -13,14 +14,8 @@ const Rh = require('./routes/api/rh')
 const app = express();
 
 
-const connectDb = require('./db/conn')
 
-
-app.use(cors());
-app.use(express.json());
-
-connectDb();
-
+connectDb(); // Appel de la fonction connectDb pour établir la connexion à MongoDB
 
 app.use('/api/patient', Patient)
 app.use('/api/admin', Admin)
@@ -29,7 +24,6 @@ app.use('/api/rh', Rh)
 
 
 
-
 app.listen(5000, () => {
     console.log("http://localhost:5000");
-})
+});

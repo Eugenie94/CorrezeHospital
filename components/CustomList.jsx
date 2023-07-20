@@ -1,40 +1,33 @@
+// CustomList.js
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import { List, Divider } from 'react-native-paper';
 import CustomCard from './CustomCard';
 import Axios from 'axios';
 
-export default function Patient() {
+export default function CustomList() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Fetch data from the backend using Axios
     Axios.get('http://localhost:5000/api/patient')
       .then((response) => {
-        setData(response.data);
-        setLoading(false);
+        setData(response.data); // Utilisez response.data pour mettre à jour les données
+        setLoading(false); // Mettez fin au chargement après avoir récupéré les données
       })
       .catch((error) => {
-        console.error('Erreur lors de la récupération des données :', error);
-        setLoading(false);
+        console.error('Error while fetching data:', error);
+        setLoading(false); // Mettez fin au chargement en cas d'erreur
       });
   }, []);
 
   if (loading) {
-    // Afficher un indicateur de chargement si les données ne sont pas encore disponibles
+    // Afficher un indicateur de chargement pendant que les données sont récupérées
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="blue" />
-        <Text>Chargement...</Text>
-      </View>
-    );
-  }
-
-  if (data.length === 0) {
-    // Afficher un message si aucune donnée n'a été trouvée
-    return (
-      <View style={styles.noDataContainer}>
-        <Text>Aucun patient trouvé.</Text>
+        <Text>Loading...</Text>
       </View>
     );
   }
@@ -45,13 +38,9 @@ export default function Patient() {
         {data.map((patient) => (
           <View key={patient._id}>
             <CustomCard
-              type="patient"
               name={`${patient.nom} ${patient.prenom}`}
               age={patient.age}
-              poids={patient.poids}
-              taille={patient.taille}
-              email={patient.email}
-              mobile={patient.mobile}
+              specialty={patient.specialty}
               treatment={patient.traitement}
             />
             <Divider />
@@ -72,11 +61,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  noDataContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
   },
 });
