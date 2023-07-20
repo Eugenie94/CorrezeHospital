@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Patients from './components/Patients';
 import Doctor from './components/Doctors';
 import Rh from './components/Rh';
+import Login from './components/Login';
 
 const Tab = createBottomTabNavigator();
 
@@ -95,10 +96,9 @@ export default function App() {
             ),
           })}
         />
-        {/* Ajoutez une condition pour afficher l'icône de connexion/profil */}
         <Tab.Screen
           name="Login"
-          component={LoginScreen}
+          component={Login}
           options={({ color }) => ({
             tabBarIcon: ({ color }) => (
               <Icon
