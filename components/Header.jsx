@@ -3,6 +3,7 @@ import { View, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Patients from './Patients';
+import Login from './Login';
 
 const Tab = createBottomTabNavigator();
 
@@ -60,7 +61,7 @@ export default function Header() {
     >
       <Tab.Screen
         name="Accueil"
-        component={HomeScreen}
+        component={Login}
         options={{
           tabBarIcon: ({ color }) => (
             <Icon name="home" size={30} color={color} />
