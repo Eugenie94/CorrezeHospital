@@ -24,6 +24,14 @@ export default function CustomCard({ type, name, age, specialty, treatment, emai
             <Subheading style={styles.doctorDetail}>Password : {password}</Subheading>
           </View>
         )}
+        {/* Ajouter ici les informations spécifiques pour le type "rh" */}
+        {type === 'rh' && (
+          <View style={styles.rhDetails}>
+            <Subheading style={styles.rhDetail}>Email : {email}</Subheading>
+            <Subheading style={styles.rhDetail}>Password : {password}</Subheading>
+            {/* Ajoutez d'autres informations spécifiques pour le type "rh" ici */}
+          </View>
+        )}
       </Card.Content>
     </Card>
   );
