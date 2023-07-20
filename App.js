@@ -5,6 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Patients from './components/Patients';
 import Doctor from './components/Doctors';
+import Rh from './components/Rh';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,7 +22,7 @@ const ContactScreen = () => (
 );
 
 const LoginScreen = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -37,7 +38,7 @@ const LoginScreen = () => {
 };
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   return (
     <NavigationContainer>
@@ -76,6 +77,15 @@ export default function App() {
             ),
           })}
         />
+         <Tab.Screen
+          name="Rh"
+          component={Rh}
+          options={({ color }) => ({
+            tabBarIcon: ({ color }) => (
+              <Icon name="briefcase" size={30} color={color} />
+            ),
+          })}
+        />
         <Tab.Screen
           name="Contact"
           component={ContactScreen}
@@ -85,20 +95,20 @@ export default function App() {
             ),
           })}
         />
-        {/* Ajoutez une condition pour afficher l'icône de connexion/profil */}
-        <Tab.Screen
-          name="Login"
-          component={LoginScreen}
-          options={({ color }) => ({
-            tabBarIcon: ({ color }) => (
-              <Icon
-                name={isLoggedIn ? 'account' : 'power'}
-                size={30}
-                color={isLoggedIn ? 'grey' : 'blue'}
-              />
-            ),
-          })}
-        />
+ {/* Ajoutez une condition pour afficher l'icône de connexion/profil */}
+ <Tab.Screen
+        name="Login"
+        component={LoginScreen}
+        options={({ color }) => ({
+          tabBarIcon: ({ color }) => (
+            <Icon
+              name={isLoggedIn ? 'account' : 'power'}
+              size={30}
+              color={isLoggedIn ? 'grey' : 'blue'}
+            />
+          ),
+        })}
+      />
       </Tab.Navigator>
     </NavigationContainer>
   );

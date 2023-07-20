@@ -5,31 +5,34 @@ import CustomCard from './CustomCard';
 import Axios from 'axios';
 
 export default function CustomList() {
-  const [patients, setPatients] = useState([]);
-  const [doctors, setDoctors] = useState([]);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [type, setType] = useState('patient'); // Set the default type to 'patient'
 
   useEffect(() => {
-    Axios.get('http://10.74.3.67:5000/api/patient')
-      .then((response) => {
-        setPatients(response.data);
-        // Do not set setLoading to false here
-      })
-      .catch((error) => {
-        console.error('Error while fetching patients:', error);
+    // Fetch data based on the type ('patient' or 'doctor')
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        if (type === 'patient') {
+          const response = await Axios.get('http://10.74.3.67:5000/api/patient');
+          setData(response.data);
+        } else if (type === 'doctor') {
+          const response = await Axios.get('http://10.74.3.67:5000/api/medecin');
+          setData(response.data);
+        } else if (type === 'rh') {
+          const response = await Axios.get('http://10.74.3.67:5000/api/rh');
+          setData(response.data);
+        }
         setLoading(false);
-      });
+      } catch (error) {
+        console.error('Error while fetching data:', error);
+        setLoading(false);
+      }
+    };
 
-    Axios.get('http://10.74.3.67:5000/api/medecin')
-      .then((response) => {
-        setDoctors(response.data);
-        setLoading(false); // Set setLoading to false here, after both patients and doctors data are fetched
-      })
-      .catch((error) => {
-        console.error('Error while fetching doctors:', error);
-        setLoading(false);
-      });
-  }, []);
+    fetchData();
+  }, [type]);
 
   if (loading) {
     return (
