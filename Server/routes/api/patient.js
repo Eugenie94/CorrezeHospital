@@ -3,8 +3,6 @@ const router = express.Router();
 
 const Patient = require('../../Models/Patient');
 
-router.get('/test', (req, res) => res.send('book route testing !'));
-
 router.get('/', (req, res) => {
     Patient.find()
         .then(patient => res.json(patient))

@@ -20,6 +20,6 @@ const rhSchema = new mongoose.Schema({
   },
 });
 
-const RH = mongoose.model('RH', rhSchema, 'rhs');
+const RH = mongoose.model('Rh', rhSchema, 'Rh');
 
 module.exports = RH;
