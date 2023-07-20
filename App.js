@@ -77,7 +77,7 @@ export default function App() {
             ),
           })}
         />
-         <Tab.Screen
+        <Tab.Screen
           name="Rh"
           component={Rh}
           options={({ color }) => ({
@@ -95,20 +95,20 @@ export default function App() {
             ),
           })}
         />
- {/* Ajoutez une condition pour afficher l'icône de connexion/profil */}
- <Tab.Screen
-        name="Login"
-        component={LoginScreen}
-        options={({ color }) => ({
-          tabBarIcon: ({ color }) => (
-            <Icon
-              name={isLoggedIn ? 'account' : 'power'}
-              size={30}
-              color={isLoggedIn ? 'grey' : 'blue'}
-            />
-          ),
-        })}
-      />
+        {/* Ajoutez une condition pour afficher l'icône de connexion/profil */}
+        <Tab.Screen
+          name="Login"
+          component={LoginScreen}
+          options={({ color }) => ({
+            tabBarIcon: ({ color }) => (
+              <Icon
+                name={isLoggedIn ? 'account' : 'power'}
+                size={30}
+                color={isLoggedIn ? 'grey' : 'blue'}
+              />
+            ),
+          })}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );
