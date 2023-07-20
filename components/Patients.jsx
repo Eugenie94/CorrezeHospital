@@ -45,27 +45,26 @@ export default function Patient() {
 
     return (
         <ScrollView style={styles.container}>
-            <List.Section>
-                {data.map((patient) => (
-                    <View key={patient._id}>
-                        <CustomCard
-                            type="patient"
-                            name={`${patient.nom} ${patient.prenom}`}
-                            age={patient.age}
-                            poids={patient.poids}
-                            taille={patient.taille}
-                            email={patient.email}
-                            mobile={patient.mobile}
-                            treatment={patient.traitement}
-                        />
-
-                        <Divider />
-                    </View>
-                ))}
-            </List.Section>
+          <List.Section>
+            {data.map((patient) => (
+              <View key={patient._id}>
+                <CustomCard
+                  role="patient"
+                  name={`${patient.nom} ${patient.prenom}`}
+                  age={patient.age}
+                  poids={patient.poids}
+                  taille={patient.taille}
+                  email={patient.email}
+                  mobile={patient.mobile}
+                  treatment={patient.traitement}
+                />
+                <Divider />
+              </View>
+            ))}
+          </List.Section>
         </ScrollView>
-    );
-}
+      );
+    }
 
 const styles = StyleSheet.create({
     container: {

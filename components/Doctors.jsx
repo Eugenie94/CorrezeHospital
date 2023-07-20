@@ -45,7 +45,7 @@ export default function Doctor() {
         {data.map((medecin) => (
           <View key={medecin._id}>
             <CustomCard
-              type="doctor"
+              role="doctor"
               name={`${medecin.nom} ${medecin.prenom}`}
               email={`${medecin.email}`}
               password={`${medecin.password}`}

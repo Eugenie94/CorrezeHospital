@@ -38,24 +38,23 @@ export default function Rh() {
       </View>
     );
   }
-console.log(Rh.password)
-  return (
-    <ScrollView style={styles.container}>
-      <List.Section>
-        {data.map((rh) => (
-          <View key={rh._id}>
-            <CustomCard
-              type="rh"
-              name={`${rh.nom} ${rh.prenom}`}
-              email={`${rh.email}`}
-              password={`${rh.password}`}
-            />
-            <Divider />
-          </View>
-        ))}
-      </List.Section>
-    </ScrollView>
-  );
+return (
+  <ScrollView style={styles.container}>
+    <List.Section>
+      {data.map((rh) => (
+        <View key={rh._id}>
+          <CustomCard
+            role="rh"
+            name={`${rh.nom} ${rh.prenom}`}
+            email={`${rh.email}`}
+            password={`${rh.password}`}
+          />
+          <Divider />
+        </View>
+      ))}
+    </List.Section>
+  </ScrollView>
+);
 }
 
 const styles = StyleSheet.create({

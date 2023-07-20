@@ -49,7 +49,7 @@ export default function CustomList() {
         {data.map((item) => (
           <View key={item._id}>
             <CustomCard
-              type={type}
+              role={type}
               name={`${item.nom} ${item.prenom}`}
               age={item.age}
               specialty={item.specialty}
