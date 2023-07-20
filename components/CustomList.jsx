@@ -1,4 +1,3 @@
-// CustomList.js
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import { List, Divider } from 'react-native-paper';
@@ -6,24 +5,33 @@ import CustomCard from './CustomCard';
 import Axios from 'axios';
 
 export default function CustomList() {
-  const [data, setData] = useState([]);
+  const [patients, setPatients] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Fetch data from the backend using Axios
     Axios.get('http://10.74.3.67:5000/api/patient')
       .then((response) => {
-        setData(response.data); // Utilisez response.data pour mettre à jour les données
-        setLoading(false); // Mettez fin au chargement après avoir récupéré les données
+        setPatients(response.data);
+        // Do not set setLoading to false here
       })
       .catch((error) => {
-        console.error('Error while fetching data:', error);
-        setLoading(false); // Mettez fin au chargement en cas d'erreur
+        console.error('Error while fetching patients:', error);
+        setLoading(false);
+      });
+
+    Axios.get('http://10.74.3.67:5000/api/medecin')
+      .then((response) => {
+        setDoctors(response.data);
+        setLoading(false); // Set setLoading to false here, after both patients and doctors data are fetched
+      })
+      .catch((error) => {
+        console.error('Error while fetching doctors:', error);
+        setLoading(false);
       });
   }, []);
 
   if (loading) {
-    // Afficher un indicateur de chargement pendant que les données sont récupérées
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="blue" />
@@ -35,13 +43,16 @@ export default function CustomList() {
   return (
     <ScrollView style={styles.container}>
       <List.Section>
-        {data.map((patient) => (
-          <View key={patient._id}>
+        {data.map((item) => (
+          <View key={item._id}>
             <CustomCard
-              name={`${patient.nom} ${patient.prenom}`}
-              age={patient.age}
-              specialty={patient.specialty}
-              treatment={patient.traitement}
+              type={type}
+              name={`${item.nom} ${item.prenom}`}
+              age={item.age}
+              specialty={item.specialty}
+              treatment={item.traitement}
+              email={item.email}
+              password={item.password}
             />
             <Divider />
           </View>

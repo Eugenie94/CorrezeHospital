@@ -1,19 +1,105 @@
-import React from 'react';
-import { View, Image } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native'; // Import the NavigationContainer
+import React, { useState } from 'react';
+import { View, TouchableOpacity } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Header from './components/Header';
-
-// ... Your other component imports and screens ...
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Patients from './components/Patients';
+import Doctor from './components/Doctors';
 
 const Tab = createBottomTabNavigator();
 
-// ... Your other screen components ...
+const HomeScreen = () => (
+  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    {/* Contenu de l'écran d'accueil */}
+  </View>
+);
+
+const ContactScreen = () => (
+  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    {/* Contenu de l'écran de contact */}
+  </View>
+);
+
+const LoginScreen = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <TouchableOpacity onPress={() => setIsLoggedIn(!isLoggedIn)}>
+        <Icon
+          name={isLoggedIn ? 'account' : 'power'}
+          size={30}
+          color={isLoggedIn ? 'green' : 'red'}
+        />
+      </TouchableOpacity>
+    </View>
+  );
+};
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   return (
     <NavigationContainer>
-      <Header />
+      <Tab.Navigator
+        screenOptions={{
+          style: { backgroundColor: '#005EB8' },
+          activeTintColor: '#FFFFFF',
+          inactiveTintColor: '#C0C0C0',
+          showLabel: false,
+        }}
+      >
+        <Tab.Screen
+          name="Accueil"
+          component={HomeScreen}
+          options={{
+            tabBarIcon: ({ color }) => (
+              <Icon name="home" size={30} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen
+          name="Patient"
+          component={Patients}
+          options={({ color }) => ({
+            tabBarIcon: ({ color }) => (
+              <Icon name="toolbox" size={30} color={color} />
+            ),
+          })}
+        />
+        <Tab.Screen
+          name="Médecins"
+          component={Doctor}
+          options={({ color }) => ({
+            tabBarIcon: ({ color }) => (
+              <Icon name="doctor" size={30} color={color} />
+            ),
+          })}
+        />
+        <Tab.Screen
+          name="Contact"
+          component={ContactScreen}
+          options={({ color }) => ({
+            tabBarIcon: ({ color }) => (
+              <Icon name="email" size={30} color={color} />
+            ),
+          })}
+        />
+        {/* Ajoutez une condition pour afficher l'icône de connexion/profil */}
+        <Tab.Screen
+          name="Login"
+          component={LoginScreen}
+          options={({ color }) => ({
+            tabBarIcon: ({ color }) => (
+              <Icon
+                name={isLoggedIn ? 'account' : 'power'}
+                size={30}
+                color={isLoggedIn ? 'grey' : 'blue'}
+              />
+            ),
+          })}
+        />
+      </Tab.Navigator>
     </NavigationContainer>
   );
-}
+};
