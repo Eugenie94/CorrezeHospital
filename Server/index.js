@@ -9,9 +9,7 @@ const app = express();
 
 const connectDb = require('./db/conn')
 
-
-
-const model_patient = require('./Models/Patient');
+// const model_patient = require('./Models/Patient');
 
 app.use(cors());
 app.use(express.json());
