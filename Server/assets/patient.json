@@ -1,0 +1,116 @@
+[   
+    {
+        "nom": "LEFRANCOIS",
+        "prenom": "théo",
+        "age": "22",
+        "poids": "64",
+        "taille": "1.78",
+        "email": "lefranois@gmail.com",
+        "mobile": "0123456789",
+        "traitement": [
+            {
+                "medicament": "Medicament A",
+                "dosageParJour": 3
+            },
+            {
+                "medicament": "Medicament B",
+                "dosageParJour": 4
+            }
+        ]
+    },
+    {
+        "nom": "CHEVALIER",
+        "prenom": "Thomas",
+        "age": "41",
+        "poids": "75",
+        "taille": "1.70",
+        "email": "chavalier@gmail.com",
+        "mobile": "0102030405",
+        "traitement": [
+            {
+                "medicament": "Medicament C",
+                "dosageParJour": 2
+            },
+            {
+                "medicament": "Medicament D",
+                "dosageParJour": 5
+            }
+        ]
+    },
+    {
+        "nom": "RONSIN",
+        "prenom": "Michel",
+        "age": "59",
+        "poids": "95",
+        "taille": "1.76",
+        "email": "ronsin@gmail.com",
+        "mobile": "0405062314",
+        "traitement": [
+            {
+                "medicament": "Medicament E",
+                "dosageParJour": 1
+            },
+            {
+                "medicament": "Medicament F",
+                "dosageParJour": 4
+            }
+        ]
+    },
+    {
+        "nom": "DURAND",
+        "prenom": "jean",
+        "age": "56",
+        "poids": "85",
+        "taille": "1.80",
+        "email": "durand@gmail.com",
+        "mobile": "9756321450",
+        "traitement": [
+            {
+                "medicament": "Medicament A",
+                "dosageParJour": 3
+            },
+            {
+                "medicament": "Medicament C",
+                "dosageParJour": 4
+            }
+        ]
+    },
+    {
+        "nom": "DUPOND",
+        "prenom": "Alexendre",
+        "age": "44",
+        "poids": "79",
+        "taille": "1.80",
+        "email": "dupond@gmail.com",
+        "mobile": "6457213895",
+        "traitement": [
+            {
+                "medicament": "Medicament E",
+                "dosageParJour": 3
+            },
+            {
+                "medicament": "Medicament F",
+                "dosageParJour": 4
+            }
+        ]
+    },
+    {
+        "nom": "MANFREDI",
+        "prenom": "Adrien",
+        "age": "23",
+        "poids": "64",
+        "taille": "1.78",
+        "email": "a.manfredi@ecole-ipssi.net",
+        "mobile": "0783674795",
+        "traitement": [
+            {
+                "medicament": "Medicament G",
+                "dosageParJour": 4
+            },
+            {
+                "medicament": "Medicament H",
+                "dosageParJour": 10
+            }
+        ]
+    }
+]

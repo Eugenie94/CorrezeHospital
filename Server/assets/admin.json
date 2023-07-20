@@ -1,0 +1,14 @@
+[
+    {
+        "nom" : "MANFREDI",
+        "prenom": "Adrien",
+        "email": "a.manfredi@ecole-ipssi.net",
+        "password": "mdp"
+    },
+    {
+        "nom" : "admin",
+        "prenom": "admin",
+        "email": "admin",
+        "password": "mdp"
+    }
+]

@@ -1,0 +1,14 @@
+[
+    {
+        "nom" : "NAGANATHAN",
+        "prenom": "Piravin",
+        "email": "p.naganathan@ecole-ipssi.net",
+        "password": ""
+    },
+    {
+        "nom" : "DUJARDIN",
+        "prenom": "Jean",
+        "email": "dujardin@gmail.com",
+        "password": ""
+    }
+]
