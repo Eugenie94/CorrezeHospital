@@ -1,14 +1,18 @@
-// CustomCard.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-export default function CustomCard({ name, age, specialty, treatment }) {
+export default function CustomCard({ name, age, treatment }) {
   return (
     <View style={styles.cardContainer}>
       <Text style={styles.name}>{name}</Text>
       {age && <Text style={styles.detail}>Âge : {age}</Text>}
-      {specialty && <Text style={styles.detail}>Spécialité : {specialty}</Text>}
-      {treatment && <Text style={styles.detail}>Traitement en cours : {treatment}</Text>}
+      {treatment && (
+        <View style={styles.treatmentContainer}>
+          <Text style={styles.treatmentTitle}>Traitement en cours :</Text>
+          <Text style={styles.treatmentDetail}>Médicament : {treatment.medicament}</Text>
+          <Text style={styles.treatmentDetail}>Dosage par jour : {treatment.dosageParJour}</Text>
+        </View>
+      )}
     </View>
   );
 }
@@ -32,5 +36,16 @@ const styles = StyleSheet.create({
   detail: {
     fontSize: 14,
     marginBottom: 4,
+  },
+  treatmentContainer: {
+    marginTop: 8,
+  },
+  treatmentTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  treatmentDetail: {
+    fontSize: 14,
+    marginLeft: 8,
   },
 });

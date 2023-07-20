@@ -9,9 +9,13 @@ export default function Patient() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Axios.get('http://localhost:5000/api/patient')
+    Axios.get('http://10.74.3.67:5000/api/patient')
       .then((response) => {
-        setData(response.data);
+        const responseData = Array.isArray(response.data)
+          ? response.data // Si c'est déjà un tableau, utilisez-le directement
+          : Object.values(response.data); // Sinon, convertissez l'objet en tableau
+  
+        setData(responseData);
         setLoading(false);
       })
       .catch((error) => {
@@ -44,16 +48,17 @@ export default function Patient() {
       <List.Section>
         {data.map((patient) => (
           <View key={patient._id}>
-            <CustomCard
-              type="patient"
-              name={`${patient.nom} ${patient.prenom}`}
-              age={patient.age}
-              poids={patient.poids}
-              taille={patient.taille}
-              email={patient.email}
-              mobile={patient.mobile}
-              treatment={patient.traitement}
-            />
+<CustomCard
+  type="patient"
+  name={`${patient.nom} ${patient.prenom}`}
+  age={patient.age}
+  poids={patient.poids}
+  taille={patient.taille}
+  email={patient.email}
+  mobile={patient.mobile}
+  treatment={patient.traitement}
+/>
+
             <Divider />
           </View>
         ))}

@@ -6,13 +6,13 @@ const Patient = require('../../Models/Patient');
 router.get('/', (req, res) => {
     Patient.find()
         .then(patient => res.json(patient))
-        .catch(err => res.status(404).json({noPatientFound: 'Pas de patients trouvées...'}));
+        .catch(err => res.status(404).json({noPatientFound: 'Pas de patient trouvé...'}));
 });
 
 router.get('/:id',  (req, res) => {
     Patient.findById(req.params.id)
         .then(patient => res.json(patient))
-        .catch(err => res.status(404).json({noPatientFound: 'Pas de patients trouvées...'}));
+        .catch(err => res.status(404).json({noPatientFound: 'Pas de patient trouvé...'}));
 });
 
 router.post('/', (req,res) => {

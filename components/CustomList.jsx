@@ -11,7 +11,7 @@ export default function CustomList() {
 
   useEffect(() => {
     // Fetch data from the backend using Axios
-    Axios.get('http://localhost:5000/api/patient')
+    Axios.get('http://10.74.3.67:5000/api/patient')
       .then((response) => {
         setData(response.data); // Utilisez response.data pour mettre à jour les données
         setLoading(false); // Mettez fin au chargement après avoir récupéré les données
