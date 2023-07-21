@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
-import { View, Text, KeyboardAvoidingView } from 'react-native';
+import { View, Text, KeyboardAvoidingView, Modal } from 'react-native';
 import { Button, TextInput, HelperText } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 import axios from 'axios';
+import Register from './Register';
 
 const Login = () => {
   const navigation = useNavigation(); // Use the useNavigation hook to access navigation prop
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [registerModalVisible, setRegisterModalVisible] = useState(false);
+
+
+  const toggleRegisterModal = () => {
+    setRegisterModalVisible(!registerModalVisible);
+  };
 
   const handleSubmit = async () => {
     try {
@@ -29,7 +36,7 @@ const Login = () => {
       }
 
       // Redirect to the Home screen after successful login
-      navigation.navigate('Accueil'); // Assuming the name of the Home screen is "Accueil"
+      navigation.navigate('Accueil'); 
 
     } catch (error) {
       console.error(error);
@@ -63,8 +70,18 @@ const Login = () => {
           {error}
         </HelperText>  
         <Button mode="contained" onPress={handleSubmit} style={{ marginTop: 10 }}>Log In</Button>
-        <Button onPress={() => navigation.navigate('Register')} style={{ marginTop: 10 }}>Don't have an account? Sign up</Button>
+        <Button onPress={toggleRegisterModal} style={{ marginTop: 10 }}>
+          Don't have an account? Sign up
+        </Button>
       </View>
+      {/* Render the Register component as a modal */}
+      <Modal
+        animationType="slide"
+        visible={registerModalVisible}
+        onRequestClose={() => setRegisterModalVisible(false)}
+      >
+        <Register closeModal={() => setRegisterModalVisible(false)} />
+      </Modal>
     </KeyboardAvoidingView>
   );
 };

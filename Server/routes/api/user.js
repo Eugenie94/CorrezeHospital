@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router();
 const User = require('../../Models/User')
+const Rh = require('../../Models/Rh')
+const Admin = require('../../Models/Admin')
+const Medecin = require('../../Models/Medecin')
 const bcrypt = require('bcrypt');
 router.use(express.json())
 
@@ -38,26 +41,50 @@ router.post('/login', async (req, res) => {
   });
 
   // Route d'inscription
-router.post('/register', async (req, res) => {
-    const {email, password, role } = req.body;
+  router.post('/register', async (req, res) => {
+    const { email, password, role } = req.body;
+  
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   
     try {
+      if (!emailRegex.test(email)) {
+        res.status(400).json({ error: 'Veuillez saisir un email valide' });
+        return;
+      }
+
+
+  
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         res.status(400).json({ error: 'Cet email est déjà utilisé' });
         return;
       }
 
-    const allowedRoles = ['admin', 'medecin', 'rh'];
-    if (!allowedRoles.includes(role)) {
-      res.status(400).json({ error: 'Le rôle doit être l\'un des suivants: admin, medecin, rh' });
+    let checkUser;
+    if (role === 'admin') {
+      checkUser = await Admin.findOne({ email });
+    } 
+    if (role === 'medecin') {
+      checkUser = await Medecin.findOne({ email });
+    }
+    if (role === 'rh') {
+      checkUser = await Rh.findOne({ email });
+    }
+    if (!checkUser) {
+      res.status(400).json({ error: 'Email introuvable' });
       return;
     }
+  
+      const allowedRoles = ['admin', 'medecin', 'rh'];
+      if (!allowedRoles.includes(role)) {
+        res.status(400).json({ error: 'Le rôle doit être l\'un des suivants: admin, medecin, rh' });
+        return;
+      }
   
       const newUser = new User({
         email,
         password,
-        role
+        role,
       });
   
       const hashedPassword = await bcrypt.hash(password, 10);
