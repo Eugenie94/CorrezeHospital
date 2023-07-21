@@ -7,20 +7,20 @@ import Axios from 'axios';
 export default function CustomList() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [type, setType] = useState('patient'); // Set the default type to 'patient'
+  const [userRole, setUserRole] = useState(false); // Mettez à jour la valeur isAdmin en fonction de l'état de connexion
 
   useEffect(() => {
     // Fetch data based on the type ('patient' or 'doctor')
     const fetchData = async () => {
       try {
         setLoading(true);
-        if (type === 'patient') {
+        if (userRole === 'patient') {
           const response = await Axios.get('http://10.74.3.67:5000/api/patient');
           setData(response.data);
-        } else if (type === 'doctor') {
+        } else if (userRole === 'doctor') {
           const response = await Axios.get('http://10.74.3.67:5000/api/medecin');
           setData(response.data);
-        } else if (type === 'rh') {
+        } else if (userRole === 'rh') {
           const response = await Axios.get('http://10.74.3.67:5000/api/rh');
           setData(response.data);
         }
@@ -49,7 +49,7 @@ export default function CustomList() {
         {data.map((item) => (
           <View key={item._id}>
             <CustomCard
-              role={type}
+              role={userRole}
               name={`${item.nom} ${item.prenom}`}
               age={item.age}
               specialty={item.specialty}

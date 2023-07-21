@@ -7,7 +7,7 @@ import Axios from 'axios';
 export default function Rh() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false); // Mettez à jour la valeur isAdmin en fonction de l'état de connexion
+  const [userRole, setUserRole] = useState(false); // Mettez à jour la valeur isAdmin en fonction de l'état de connexion
 
   useEffect(() => {
     Axios.get('http://10.74.3.67:5000/api/rh')
@@ -42,7 +42,7 @@ export default function Rh() {
 
   return (
     <ScrollView style={styles.container}>
-      {isAdmin && ( // Condition pour afficher le texte si vous êtes connecté en tant qu'administrateur
+      {userRole && ( // Condition pour afficher le texte si vous êtes connecté en tant qu'administrateur
         <Text style={styles.adminText}>Vous êtes connecté en tant qu'administrateur</Text>
       )}
       <List.Section>

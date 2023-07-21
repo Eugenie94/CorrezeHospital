@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, Text, ActivityIndicator } from 'react-native';
+import { View, ScrollView, StyleSheet, Text, ActivityIndicator, TouchableOpacity, Modal, TextInput, Button } from 'react-native';
 import { List, Divider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomCard from './CustomCard';
@@ -8,23 +8,42 @@ import Axios from 'axios';
 export default function Patient() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [userRole, setUserRole] = useState(''); // Ajout du state pour le rôle de l'utilisateur
+    const [userRole, setUserRole] = useState('');
+    const [showModal, setShowModal] = useState(false);
+    const [newPatientData, setNewPatientData] = useState({
+        nom: '',
+        prenom: '',
+        age: '',
+        poids: '',
+        taille: '',
+        email: '',
+        mobile: '',
+        traitement: [
+            {
+                "medicament": "Medicament A",
+                "dosageParJour": 3
+            },
+            {
+                "medicament": "Medicament C",
+                "dosageParJour": 4
+            }
+        ]
+    });
 
     const Role = async () => {
         try {
-          const userJson = await AsyncStorage.getItem('user');
-          if (userJson !== null) {
-            const user = JSON.parse(userJson);
-            setUserRole(user.role)       
-          } else {
-            console.log('Aucune valeur pour la clé "user" dans AsyncStorage.');
-          }
+            const userJson = await AsyncStorage.getItem('user');
+            if (userJson !== null) {
+                const user = JSON.parse(userJson);
+                setUserRole(user.role);
+            } else {
+                console.log('Aucune valeur pour la clé "user" dans AsyncStorage.');
+            }
         } catch (error) {
-          console.log('Erreur lors de la récupération de la valeur :', error);
-          return null
+            console.log('Erreur lors de la récupération de la valeur :', error);
+            return null;
         }
-      };
-
+    };
 
     useEffect(() => {
         Axios.get('http://10.74.3.67:5000/api/patient')
@@ -40,16 +59,39 @@ export default function Patient() {
                 console.error('Erreur lors de la récupération des données :', error);
                 setLoading(false);
             });
-    },);
-
+    }, []);
 
     useEffect(() => {
-        // Ici, vous pouvez définir le rôle de l'utilisateur une fois qu'il est connecté
         Role();
-    },);
-    
+    }, []);
+
+
+    const handleAjouterPatient = () => {
+        // Envoyer les données du nouveau patient au backend pour l'ajouter dans la base de données
+        Axios.post('http://10.74.3.67:5000/api/patient', newPatientData)
+            .then((response) => {
+                console.log('Nouveau patient ajouté avec succès !');
+                // Fermer la modal après avoir ajouté le patient
+                setShowModal(false);
+                // Rafraîchir la liste des patients en rechargeant les données depuis le backend
+                Axios.get('http://10.74.3.67:5000/api/patient')
+                    .then((response) => {
+                        const responseData = Array.isArray(response.data)
+                            ? response.data
+                            : Object.values(response.data);
+                        setData(responseData);
+                    })
+                    .catch((error) => {
+                        console.error('Erreur lors de la récupération des données :', error);
+                    });
+            })
+            .catch((error) => {
+                console.error('Erreur lors de l\'ajout du nouveau patient :', error);
+                // Afficher un message d'erreur ou effectuer toute autre action en cas d'échec de l'ajout
+            });
+    };
+
     if (loading) {
-        // Afficher un indicateur de chargement si les données ne sont pas encore disponibles
         return (
             <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="blue" />
@@ -59,7 +101,6 @@ export default function Patient() {
     }
 
     if (data.length === 0) {
-        // Afficher un message si aucune donnée n'a été trouvée
         return (
             <View style={styles.noDataContainer}>
                 <Text>Aucun patient trouvé.</Text>
@@ -69,13 +110,84 @@ export default function Patient() {
 
     return (
         <ScrollView style={styles.container}>
-            {userRole=== 'rh' ? ( // Utilisez un opérateur ternaire pour afficher le message uniquement si l'utilisateur est connecté en tant que "rh"
+            {userRole === 'rh' ? (
                 <View style={styles.rhMessageContainer}>
-                    <Text style={styles.rhMessage}>
-                        Je suis un RH et je peux ajouter un patient.
-                    </Text>
+                    <TouchableOpacity onPress={() => setShowModal(true)}>
+                        <Text style={styles.rhMessage}>Ajouter un patient</Text>
+                    </TouchableOpacity>
                 </View>
             ) : null}
+
+            <Modal visible={showModal} animationType="slide">
+                <View style={styles.modalContainer}>
+                    <Text style={styles.modalTitle}>Ajouter un nouveau patient</Text>
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Nom"
+                        value={newPatientData.nom}
+                        onChangeText={(text) => setNewPatientData({ ...newPatientData, nom: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Prénom"
+                        value={newPatientData.prenom}
+                        onChangeText={(text) => setNewPatientData({ ...newPatientData, prenom: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Âge"
+                        keyboardType="numeric"
+                        value={newPatientData.age}
+                        onChangeText={(text) => setNewPatientData({ ...newPatientData, age: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Poids"
+                        keyboardType="numeric"
+                        value={newPatientData.poids}
+                        onChangeText={(text) => setNewPatientData({ ...newPatientData, poids: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Taille"
+                        keyboardType="numeric"
+                        value={newPatientData.taille}
+                        onChangeText={(text) => setNewPatientData({ ...newPatientData, taille: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Email"
+                        value={newPatientData.email}
+                        onChangeText={(text) => setNewPatientData({ ...newPatientData, email: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Mobile"
+                        value={newPatientData.mobile}
+                        onChangeText={(text) => setNewPatientData({ ...newPatientData, mobile: text })}
+                    />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Traitement en cours"
+                        value={
+                            typeof newPatientData.traitement === 'string'
+                                ? newPatientData.traitement // Utiliser la chaîne JSON si elle est déjà au bon format
+                                : JSON.stringify(newPatientData.traitement) // Convertir l'objet en chaîne JSON
+                        }
+                        onChangeText={(text) => {
+                            try {
+                                setNewPatientData({ ...newPatientData, traitement: JSON.parse(text) }); // Reconvertir la chaîne en objet JSON
+                            } catch (error) {
+                                // Gérer les erreurs d'analyse JSON si nécessaire
+                                console.error('Erreur lors de la conversion JSON :', error);
+                            }
+                        }}
+                    />
+                    <Button title="Ajouter" onPress={handleAjouterPatient} />
+                    <Button title="Annuler" onPress={() => setShowModal(false)} />
+                </View>
+            </Modal>
+
             <List.Section>
                 {data.map((patient) => (
                     <View key={patient._id}>
@@ -122,5 +234,25 @@ const styles = StyleSheet.create({
     rhMessage: {
         color: '#FFFFFF', // Couleur du texte pour le message RH
         textAlign: 'center',
+    },
+    modalContainer: {
+        flex: 1,
+        padding: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 16,
+    },
+    input: {
+        width: '100%',
+        height: 40,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 8,
+        paddingHorizontal: 8,
+        marginBottom: 16,
     },
 });
