@@ -110,7 +110,7 @@ export default function Patient() {
 
     return (
         <ScrollView style={styles.container}>
-            {userRole === 'rh' ? (
+      {userRole === 'rh' || userRole === 'admin' ? ( // Condition pour afficher le bloc suivant si le rôle est "rh" ou "admin"
                 <View style={styles.rhMessageContainer}>
                     <TouchableOpacity onPress={() => setShowModal(true)}>
                         <Text style={styles.rhMessage}>Ajouter un patient</Text>

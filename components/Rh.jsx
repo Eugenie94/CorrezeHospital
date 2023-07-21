@@ -43,7 +43,7 @@ export default function Rh() {
   return (
     <ScrollView style={styles.container}>
       {userRole && ( // Condition pour afficher le texte si vous êtes connecté en tant qu'administrateur
-        <Text style={styles.adminText}>Vous êtes connecté en tant qu'administrateur</Text>
+        <Text style={styles.adminText}>Y a que les admins qui pourront afficher cette vue la</Text>
       )}
       <List.Section>
         {data.map((rh) => (
