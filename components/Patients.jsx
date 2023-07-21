@@ -7,6 +7,7 @@ import Axios from 'axios';
 export default function Patient() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [userRole, setUserRole] = useState(true); // Ajout du state pour le rôle de l'utilisateur
 
     useEffect(() => {
         Axios.get('http://10.74.3.67:5000/api/patient')
@@ -24,6 +25,12 @@ export default function Patient() {
             });
     }, []);
 
+
+    useEffect(() => {
+        // Ici, vous pouvez définir le rôle de l'utilisateur une fois qu'il est connecté
+        setUserRole('rh'); // Remplacez 'rh' par le rôle réel de l'utilisateur connecté
+    }, []);
+    
     if (loading) {
         // Afficher un indicateur de chargement si les données ne sont pas encore disponibles
         return (
@@ -45,26 +52,33 @@ export default function Patient() {
 
     return (
         <ScrollView style={styles.container}>
-          <List.Section>
-            {data.map((patient) => (
-              <View key={patient._id}>
-                <CustomCard
-                  role="patient"
-                  name={`${patient.nom} ${patient.prenom}`}
-                  age={patient.age}
-                  poids={patient.poids}
-                  taille={patient.taille}
-                  email={patient.email}
-                  mobile={patient.mobile}
-                  treatment={patient.traitement}
-                />
-                <Divider />
-              </View>
-            ))}
-          </List.Section>
+            {userRole === 'rh' ? ( // Utilisez un opérateur ternaire pour afficher le message uniquement si l'utilisateur est connecté en tant que "rh"
+                <View style={styles.rhMessageContainer}>
+                    <Text style={styles.rhMessage}>
+                        Je suis un RH et je peux ajouter un patient.
+                    </Text>
+                </View>
+            ) : null}
+            <List.Section>
+                {data.map((patient) => (
+                    <View key={patient._id}>
+                        <CustomCard
+                            role="patient"
+                            name={`${patient.nom} ${patient.prenom}`}
+                            age={patient.age}
+                            poids={patient.poids}
+                            taille={patient.taille}
+                            email={patient.email}
+                            mobile={patient.mobile}
+                            treatment={patient.traitement}
+                        />
+                        <Divider />
+                    </View>
+                ))}
+            </List.Section>
         </ScrollView>
-      );
-    }
+    );
+}
 
 const styles = StyleSheet.create({
     container: {
@@ -82,5 +96,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 16,
+    },
+    rhMessageContainer: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        backgroundColor: '#005EB8', // Couleur d'arrière-plan pour le message RH
+    },
+    rhMessage: {
+        color: '#FFFFFF', // Couleur du texte pour le message RH
+        textAlign: 'center',
     },
 });

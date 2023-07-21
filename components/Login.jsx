@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, KeyboardAvoidingView, Modal } from 'react-native';
 import { Button, TextInput, HelperText } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+ // Import AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Register from './Register';
 
@@ -31,6 +32,8 @@ const Login = () => {
       try {
         await AsyncStorage.setItem('isLoggedIn', 'true');
         await AsyncStorage.setItem('user', JSON.stringify(user));
+        console.log('user')
+        
       } catch (error) {
         console.error('Error storing data:', error);
       }
