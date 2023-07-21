@@ -1,13 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import { List, Divider } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomCard from './CustomCard';
 import Axios from 'axios';
 
 export default function Patient() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [userRole, setUserRole] = useState(true); // Ajout du state pour le rôle de l'utilisateur
+    const [userRole, setUserRole] = useState(''); // Ajout du state pour le rôle de l'utilisateur
+
+    const Role = async () => {
+        try {
+          const userJson = await AsyncStorage.getItem('user');
+          if (userJson !== null) {
+            const user = JSON.parse(userJson);
+            setUserRole(user.role)       
+          } else {
+            console.log('Aucune valeur pour la clé "user" dans AsyncStorage.');
+          }
+        } catch (error) {
+          console.log('Erreur lors de la récupération de la valeur :', error);
+          return null
+        }
+      };
+
 
     useEffect(() => {
         Axios.get('http://10.74.3.67:5000/api/patient')
@@ -23,13 +40,13 @@ export default function Patient() {
                 console.error('Erreur lors de la récupération des données :', error);
                 setLoading(false);
             });
-    }, []);
+    },);
 
 
     useEffect(() => {
         // Ici, vous pouvez définir le rôle de l'utilisateur une fois qu'il est connecté
-        setUserRole('rh'); // Remplacez 'rh' par le rôle réel de l'utilisateur connecté
-    }, []);
+        Role();
+    },);
     
     if (loading) {
         // Afficher un indicateur de chargement si les données ne sont pas encore disponibles
@@ -52,7 +69,7 @@ export default function Patient() {
 
     return (
         <ScrollView style={styles.container}>
-            {userRole === 'rh' ? ( // Utilisez un opérateur ternaire pour afficher le message uniquement si l'utilisateur est connecté en tant que "rh"
+            {userRole=== 'rh' ? ( // Utilisez un opérateur ternaire pour afficher le message uniquement si l'utilisateur est connecté en tant que "rh"
                 <View style={styles.rhMessageContainer}>
                     <Text style={styles.rhMessage}>
                         Je suis un RH et je peux ajouter un patient.

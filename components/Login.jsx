@@ -15,6 +15,7 @@ const Login = () => {
   const [registerModalVisible, setRegisterModalVisible] = useState(false);
 
 
+
   const toggleRegisterModal = () => {
     setRegisterModalVisible(!registerModalVisible);
   };
@@ -27,17 +28,22 @@ const Login = () => {
       });
 
       const { user } = response.data;
-      console.log(user);
 
       try {
         await AsyncStorage.setItem('isLoggedIn', 'true');
         await AsyncStorage.setItem('user', JSON.stringify(user));
-        console.log('user')
         
       } catch (error) {
         console.error('Error storing data:', error);
       }
 
+      const userJson = await AsyncStorage.getItem('user');
+  
+      if (userJson !== null) {
+        // Convertir la valeur JSON en objet JavaScript
+        const user = JSON.parse(userJson);
+        console.log(user.role)
+      }
       // Redirect to the Home screen after successful login
       navigation.navigate('Accueil'); 
 
