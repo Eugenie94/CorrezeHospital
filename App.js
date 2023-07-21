@@ -23,15 +23,14 @@ const ContactScreen = () => (
 );
 
 const LoginScreen = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <TouchableOpacity onPress={() => setIsLoggedIn(!isLoggedIn)}>
+      <TouchableOpacity onPress={() => (!'isLoggedIn')}>
         <Icon
-          name={isLoggedIn ? 'account' : 'power'}
+          name={'isLoggedIn' ? 'account' : 'power'}
           size={30}
-          color={isLoggedIn ? 'green' : 'red'}
+          color={'isLoggedIn' ? 'green' : 'red'}
         />
       </TouchableOpacity>
     </View>
@@ -39,7 +38,6 @@ const LoginScreen = () => {
 };
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   return (
     <NavigationContainer>
@@ -96,19 +94,20 @@ export default function App() {
             ),
           })}
         />
-        <Tab.Screen
+                <Tab.Screen
           name="Login"
           component={Login}
           options={({ color }) => ({
             tabBarIcon: ({ color }) => (
               <Icon
-                name={isLoggedIn ? 'account' : 'power'}
+                name={'isLoggedIn' ? 'power' : 'account'}
                 size={30}
-                color={isLoggedIn ? 'grey' : 'blue'}
+                color={'isLoggedIn' ? 'grey' : 'blue'}
               />
             ),
           })}
-        />
+        >
+        </Tab.Screen>
       </Tab.Navigator>
     </NavigationContainer>
   );

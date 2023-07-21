@@ -7,6 +7,7 @@ import Axios from 'axios';
 export default function Rh() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false); // Mettez à jour la valeur isAdmin en fonction de l'état de connexion
 
   useEffect(() => {
     Axios.get('http://10.74.3.67:5000/api/rh')
@@ -38,23 +39,27 @@ export default function Rh() {
       </View>
     );
   }
-return (
-  <ScrollView style={styles.container}>
-    <List.Section>
-      {data.map((rh) => (
-        <View key={rh._id}>
-          <CustomCard
-            role="rh"
-            name={`${rh.nom} ${rh.prenom}`}
-            email={`${rh.email}`}
-            password={`${rh.password}`}
-          />
-          <Divider />
-        </View>
-      ))}
-    </List.Section>
-  </ScrollView>
-);
+
+  return (
+    <ScrollView style={styles.container}>
+      {isAdmin && ( // Condition pour afficher le texte si vous êtes connecté en tant qu'administrateur
+        <Text style={styles.adminText}>Vous êtes connecté en tant qu'administrateur</Text>
+      )}
+      <List.Section>
+        {data.map((rh) => (
+          <View key={rh._id}>
+            <CustomCard
+              role="rh"
+              name={`${rh.nom} ${rh.prenom}`}
+              email={`${rh.email}`}
+              password={`${rh.password}`}
+            />
+            <Divider />
+          </View>
+        ))}
+      </List.Section>
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -73,5 +78,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 16,
+  },
+  adminText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 16,
   },
 });
