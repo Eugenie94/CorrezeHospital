@@ -4,8 +4,8 @@ import { Card, Title, Subheading, useTheme } from 'react-native-paper';
 import { IconButton } from 'react-native-paper';
 import Communications from 'react-native-communications'; // Import the Communications module
 
-export default function CustomCard({ role, name, age, taille, poids, treatment, email, mobile, onEdit, onDelete }) {
-  const [userRole, setUserRole] = useState('rh');
+export default function CustomCard({ role, name, age, taille, poids, treatment, email, mobile, onEdit, onDelete, userRole  }) {
+  const [localUserRole, setLocalUserRole] = useState(userRole);
   const theme = useTheme();
 
   const handleSendSMS = () => {
@@ -54,7 +54,7 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
           <IconButton icon="pencil" size={20} onPress={() => onEdit()} />
           <IconButton icon="delete-outline" size={20} onPress={() => onDelete()} />
         </Card.Actions>
-      ) : userRole === 'rh' && role === 'patient' ? (
+      ) : userRole === 'medecin' && role === 'patient' ? (
         <Card.Actions style={styles.cardActions}>
           <IconButton icon="message-text" size={20} onPress={handleSendSMS} />
           <IconButton icon="calendar" size={24} color="black" onPress={() => console.log('Calendar icon pressed')} />
