@@ -44,7 +44,9 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
   return (
     <Card style={styles.cardContainer}>
       <Card.Content>
-        <Title style={{ color: theme.colors.primary }}>{name}</Title>
+        <View style={styles.headerContainer}>
+          <Title style={{ color: theme.colors.primary }}>{name}</Title>
+        </View>
         {renderSpecificInfo()}
       </Card.Content>
       {userRole === 'admin' ? (
@@ -55,6 +57,7 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
       ) : userRole === 'rh' && role === 'patient' ? (
         <Card.Actions style={styles.cardActions}>
           <IconButton icon="message-text" size={20} onPress={handleSendSMS} />
+          <IconButton icon="calendar" size={24} color="black" onPress={() => console.log('Calendar icon pressed')} />
         </Card.Actions>
       ) : null}
     </Card>
@@ -67,6 +70,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginVertical: 8,
     elevation: 4,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', // Pour espacer le titre et l'icône
   },
   treatmentContainer: {
     marginTop: 8,
