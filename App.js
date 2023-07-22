@@ -8,6 +8,7 @@ import Patients from './components/Patients';
 import Doctor from './components/Doctors';
 import Rh from './components/Rh';
 import Login from './components/Login';
+import Profile from './components/Profile';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,16 +18,6 @@ const HomeScreen = () => (
   </View>
 );
 
-const LoginScreen = () => {
-
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <TouchableOpacity onPress={() => (!'isLoggedIn')}>
-       <Text>Profile</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
 
 export default function App() {
   const [userRole, setUserRole] = useState('');
@@ -34,9 +25,11 @@ export default function App() {
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const userRole = await AsyncStorage.getItem('userRole'); // Replace 'userRole' with the correct key used to store the user role in AsyncStorage
-        setUserRole(userRole);
-        console.log('User role:', userRole); // Console log user role
+        const userRoleData = JSON.parse(await AsyncStorage.getItem('user'));
+        const login = JSON.parse(await AsyncStorage.getItem('isLoggedIn'));
+        setUserRole(userRoleData.role)
+        console.log('User role:', userRoleData.role);
+        console.log('User login:', login); 
       } catch (error) {
         console.error('Error fetching user role:', error);
       }
@@ -45,18 +38,22 @@ export default function App() {
     fetchUserRole();
   }, []);
 
+
+  useEffect(() => {
+  }, [userRole]);
+
   return (
-    <NavigationContainer>
-      <Tab.Navigator
-        screenOptions={{
-          style: { backgroundColor: '#005EB8' },
-          activeTintColor: '#FFFFFF',
-          inactiveTintColor: '#C0C0C0',
-          showLabel: false,
-        }}
-      >
-        {userRole === 'admin' ? (
-          <>
+    <>
+    {(userRole === 'admin') ? (
+      <NavigationContainer >
+        <Tab.Navigator
+          screenOptions={{
+            style: { backgroundColor: '#005EB8' },
+            activeTintColor: '#FFFFFF',
+            inactiveTintColor: '#C0C0C0',
+            showLabel: false,
+          }}
+        >
             <Tab.Screen
               name="Accueil"
               component={HomeScreen}
@@ -94,19 +91,21 @@ export default function App() {
               })}
             />
             <Tab.Screen
-              name="Login"
-              component={LoginScreen}
+              name="Profil"
+              children={() => <Profile setUserRole={setUserRole} />}
               options={({ color }) => ({
                 tabBarIcon: ({ color }) => (
                   <Icon name="account" size={30} color={color} />
                 ),
               })}
             />
-          </>
-        ) : (
-          // If user role is not "admin" so "rh" or "medecin"
-          <>
-            <Tab.Screen
+        </Tab.Navigator>
+      </NavigationContainer> ) : ( 
+        (userRole === 'rh' || userRole === 'medecin') ?
+        (
+        <NavigationContainer>
+          <Tab.Navigator>
+          <Tab.Screen
               name="Accueil"
               component={HomeScreen}
               options={({ color }) => ({
@@ -125,17 +124,43 @@ export default function App() {
               })}
             />
             <Tab.Screen
-              name="Login"
-              component={LoginScreen}
+              name="Profil"
+              children={() => <Profile setUserRole={setUserRole} />}
               options={({ color }) => ({
                 tabBarIcon: ({ color }) => (
                   <Icon name="account" size={30} color={color} />
                 ),
               })}
             />
-          </>
-        )}
-      </Tab.Navigator>
-    </NavigationContainer>
-  );
-}
+          </Tab.Navigator>
+        </NavigationContainer>
+        ):
+        (
+          <NavigationContainer>
+          <Tab.Navigator>
+          <Tab.Screen
+              name="Accueil"
+              component={HomeScreen}
+              options={({ color }) => ({
+                tabBarIcon: ({ color }) => (
+                  <Icon name="toolbox" size={30} color={color} />
+                ),
+              })}
+            />
+            <Tab.Screen
+              name="Login"
+              children={() => <Login setUserRole={setUserRole} />}
+              options={({ color }) => ({
+                tabBarIcon: ({ color }) => (
+                  <Icon name="account" size={30} color={color} />
+                ),
+              })}
+            />
+          </Tab.Navigator>
+        </NavigationContainer>
+        )
+    )}
+    </>
+
+    
+  )}
