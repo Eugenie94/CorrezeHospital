@@ -12,20 +12,20 @@ export default function Patient() {
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [newPatientData, setNewPatientData] = useState({
-        nom: 'Dupont',
-        prenom: 'Lola',
-        age: '34',
-        poids: '58',
-        taille: '162',
-        email: 'dlola@gmail.com',
-        mobile: '2321211121',
+        nom: '',
+        prenom: '',
+        age: '',
+        poids: '',
+        taille: '',
+        email: '',
+        mobile: '',
         traitement: [
             {
-                "medicament": "Medicament A",
+                "medicament": "",
                 "dosageParJour": 3
             },
             {
-                "medicament": "Medicament C",
+                "medicament": "",
                 "dosageParJour": 4
             }
         ]
