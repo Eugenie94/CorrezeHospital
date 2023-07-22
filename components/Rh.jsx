@@ -133,7 +133,7 @@ export default function Rh() {
       {userRole === 'admin' && ( // Condition pour afficher le bouton "Ajouter un RH" si vous êtes connecté en tant qu'administrateur
         <View style={styles.rhMessageContainer}>
           <TouchableOpacity onPress={() => setShowAddModal(true)}>
-            <Text style={styles.rhMessage}>Ajouter un RH</Text>
+            <Text style={styles.rhMessage}>Ajouter un rh</Text>
           </TouchableOpacity>
         </View>
       )}
