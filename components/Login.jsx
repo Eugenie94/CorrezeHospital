@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Register from './Register';
 
-const Login = () => {
+const Login = ({setUserRole} ) => {
   const navigation = useNavigation(); // Use the useNavigation hook to access navigation prop
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
@@ -20,7 +20,7 @@ const Login = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://10.74.3.71:5000/api/login', {
+      const response = await axios.post('http://192.168.1.44:5000/api/login', {
         email,
         password,
       });
@@ -30,6 +30,7 @@ const Login = () => {
       try {
         await AsyncStorage.setItem('isLoggedIn', 'true');
         await AsyncStorage.setItem('user', JSON.stringify(user));
+        setUserRole(user.role); // update the userRole state variable
         
       } catch (error) {
         console.error('Error storing data:', error);
@@ -88,6 +89,9 @@ const Login = () => {
         onRequestClose={() => setRegisterModalVisible(false)}
       >
         <Register closeModal={() => setRegisterModalVisible(false)} />
+        <Button onPress={toggleRegisterModal} style={{ marginTop: 10 }}>
+          Close
+        </Button>
       </Modal>
     </KeyboardAvoidingView>
   );
