@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Title, Subheading, useTheme } from 'react-native-paper';
 import { IconButton } from 'react-native-paper';
-import Communications from 'react-native-communications'; // Import the Communications module
 import SendMessage from './SendMessage';
+import CalendarMedecin from './CalendarMedecin';
 
-export default function CustomCard({ role, name, age, taille, poids, treatment, email, mobile, onEdit, onDelete, userRole  }) {
-  const [localUserRole, setLocalUserRole] = useState(userRole);
+export default function CustomCard({ role, name, age, taille, poids, treatment, email, mobile, onEdit, onDelete, userRole }) {
   const theme = useTheme();
-
-  const handleSendSMS = () => {
-    const message = 'Ceci est un SMS envoyé depuis mon application React Native !';
-    Communications.text(mobile, message); // Use Communications module to send SMS
-  };
+  const [showForm, setShowForm] = useState(false);
 
   const renderSpecificInfo = () => {
     if (role === 'patient') {
@@ -41,6 +36,9 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
     }
   };
 
+  const handleToggleForm = () => {
+    setShowForm(!showForm);
+  };
 
   return (
     <Card style={styles.cardContainer}>
@@ -58,9 +56,12 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
       ) : userRole === 'medecin' && role === 'patient' ? (
         <Card.Actions style={styles.cardActions}>
           <SendMessage mobile={mobile} />
-          <IconButton icon="calendar" size={24} color="black" onPress={() => console.log('Calendar icon pressed')} />
+          <IconButton icon="calendar" size={24} color="black" onPress={handleToggleForm} />
         </Card.Actions>
       ) : null}
+      {showForm && userRole === 'medecin' && role === 'patient' && (
+        <CalendarMedecin />
+      )}
     </Card>
   );
 }
