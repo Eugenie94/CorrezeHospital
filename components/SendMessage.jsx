@@ -1,8 +1,7 @@
 import React from 'react';
 import { View, Pressable, Text, Linking, Platform } from 'react-native';
 
-const SendMessage = () => {
-  const phoneNumber = '0783674795'; // numero du patient
+export default function SendMessage() {
   const message = 'Bonjour, ceci est un SMS envoyé depuis mon application React Native !';
 
   const handleSendSMS = () => {
@@ -30,5 +29,3 @@ const SendMessage = () => {
     </View>
   );
 };
-
-export default SendMessage;

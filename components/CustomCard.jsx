@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Card, Title, Subheading, useTheme, Button } from 'react-native-paper';
+import { Card, Title, Subheading, useTheme } from 'react-native-paper';
 import { IconButton } from 'react-native-paper';
+import Communications from 'react-native-communications'; // Import the Communications module
 
 export default function CustomCard({ role, name, age, taille, poids, treatment, email, mobile, onEdit, onDelete }) {
-  const [userRole, setUserRole] = useState('');
+  const [userRole, setUserRole] = useState('rh');
   const theme = useTheme();
+
+  const handleSendSMS = () => {
+    const message = 'Ceci est un SMS envoyé depuis mon application React Native !';
+    Communications.text(mobile, message); // Use Communications module to send SMS
+  };
 
   const renderSpecificInfo = () => {
     if (role === 'patient') {
@@ -25,17 +31,15 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
           )}
         </>
       );
-    } else if (role === 'medecin') { // Changed 'medecin' to 'doctor'
+    } else {
       return (
         <>
           {email && <Subheading>Email : {email}</Subheading>}
         </>
-      );
-    } else {
-      return null;
+      )
     }
   };
-  
+
 
   return (
     <Card style={styles.cardContainer}>
@@ -45,9 +49,12 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
       </Card.Content>
       {userRole === 'admin' ? (
         <Card.Actions style={styles.cardActions}>
-          {/* Utilisez IconButton au lieu de Button pour les icônes d'édition et de suppression */}
           <IconButton icon="pencil" size={20} onPress={() => onEdit()} />
           <IconButton icon="delete-outline" size={20} onPress={() => onDelete()} />
+        </Card.Actions>
+      ) : userRole === 'rh' && role === 'patient' ? (
+        <Card.Actions style={styles.cardActions}>
+          <IconButton icon="message-text" size={20} onPress={handleSendSMS} />
         </Card.Actions>
       ) : null}
     </Card>
