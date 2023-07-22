@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import { Card, Title, Subheading, useTheme } from 'react-native-paper';
 import { IconButton } from 'react-native-paper';
 import Communications from 'react-native-communications'; // Import the Communications module
+import SendMessage from './SendMessage';
 
 export default function CustomCard({ role, name, age, taille, poids, treatment, email, mobile, onEdit, onDelete, userRole  }) {
   const [localUserRole, setLocalUserRole] = useState(userRole);
@@ -56,7 +57,7 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
         </Card.Actions>
       ) : userRole === 'medecin' && role === 'patient' ? (
         <Card.Actions style={styles.cardActions}>
-          <IconButton icon="message-text" size={20} onPress={handleSendSMS} />
+          <SendMessage mobile={mobile} />
           <IconButton icon="calendar" size={24} color="black" onPress={() => console.log('Calendar icon pressed')} />
         </Card.Actions>
       ) : null}
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between', // Pour espacer le titre et l'icône
+    justifyContent: 'space-between', 
   },
   treatmentContainer: {
     marginTop: 8,
