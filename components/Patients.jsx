@@ -9,15 +9,16 @@ export default function Patient() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [userRole, setUserRole] = useState('');
-    const [showModal, setShowModal] = useState(false);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [newPatientData, setNewPatientData] = useState({
-        nom: '',
-        prenom: '',
-        age: '',
-        poids: '',
-        taille: '',
-        email: '',
-        mobile: '',
+        nom: 'Dupont',
+        prenom: 'Lola',
+        age: '34',
+        poids: '58',
+        taille: '162',
+        email: 'dlola@gmail.com',
+        mobile: '2321211121',
         traitement: [
             {
                 "medicament": "Medicament A",
@@ -29,6 +30,7 @@ export default function Patient() {
             }
         ]
     });
+    const [selectedPatientData, setSelectedPatientData] = useState(null);
 
     const Role = async () => {
         try {
@@ -46,12 +48,11 @@ export default function Patient() {
     };
 
     useEffect(() => {
-        Axios.get('http://10.74.3.67:5000/api/patient')
+        Axios.get('http://192.168.1.92:5000/api/patient')
             .then((response) => {
                 const responseData = Array.isArray(response.data)
-                    ? response.data // Si c'est déjà un tableau, utilisez-le directement
-                    : Object.values(response.data); // Sinon, convertissez l'objet en tableau
-
+                    ? response.data
+                    : Object.values(response.data);
                 setData(responseData);
                 setLoading(false);
             })
@@ -59,22 +60,24 @@ export default function Patient() {
                 console.error('Erreur lors de la récupération des données :', error);
                 setLoading(false);
             });
+        Role(); // Appeler Role ici pour mettre à jour la valeur de userRole
     }, []);
 
     useEffect(() => {
         Role();
     }, []);
 
+    console.log('UserRole:', userRole); // Vérifiez la valeur de userRole ici
 
-    const handleAjouterPatient = () => {
+    const handleAddPatient = () => {
         // Envoyer les données du nouveau patient au backend pour l'ajouter dans la base de données
-        Axios.post('http://10.74.3.67:5000/api/patient', newPatientData)
+        Axios.post('http://192.168.1.92:5000/api/patient', newPatientData)
             .then((response) => {
                 console.log('Nouveau patient ajouté avec succès !');
                 // Fermer la modal après avoir ajouté le patient
-                setShowModal(false);
+                setShowAddModal(false);
                 // Rafraîchir la liste des patients en rechargeant les données depuis le backend
-                Axios.get('http://10.74.3.67:5000/api/patient')
+                Axios.get('http://192.168.1.92:5000/api/patient')
                     .then((response) => {
                         const responseData = Array.isArray(response.data)
                             ? response.data
@@ -88,6 +91,68 @@ export default function Patient() {
             .catch((error) => {
                 console.error('Erreur lors de l\'ajout du nouveau patient :', error);
                 // Afficher un message d'erreur ou effectuer toute autre action en cas d'échec de l'ajout
+            });
+    };
+
+    const handleEditPatient = (patientId, updatedData) => {
+        // Récupérer les données du patient que vous souhaitez modifier en utilisant l'ID du patient
+        const patientToUpdate = data.find((patient) => patient._id === patientId);
+        if (patientToUpdate) {
+            // Mettre à jour l'état selectedPatientData avec les données du patient sélectionné
+            setSelectedPatientData(patientToUpdate);
+            // Ouvrir la modal de modification
+            setShowEditModal(true);
+        }
+    };
+
+    const handleUpdatePatient = () => {
+        // Vérifier si selectedPatientData n'est pas null
+        if (selectedPatientData) {
+            // Envoyer les données mises à jour au backend pour modifier le patient dans la base de données
+            Axios.put(`http://192.168.1.92:5000/api/patient/${selectedPatientData._id}`, selectedPatientData)
+                .then((response) => {
+                    console.log('Patient mis à jour avec succès !');
+                    // Fermer la modal après avoir mis à jour le patient
+                    setShowEditModal(false);
+                    // Rafraîchir la liste des patients en rechargeant les données depuis le backend
+                    Axios.get('http://192.168.1.92:5000/api/patient')
+                        .then((response) => {
+                            const responseData = Array.isArray(response.data)
+                                ? response.data
+                                : Object.values(response.data);
+                            setData(responseData);
+                        })
+                        .catch((error) => {
+                            console.error('Erreur lors de la récupération des données :', error);
+                        });
+                })
+                .catch((error) => {
+                    console.error('Erreur lors de la mise à jour du patient :', error);
+                    // Afficher un message d'erreur ou effectuer toute autre action en cas d'échec de la mise à jour
+                });
+        }
+    };
+
+    const handleDeletePatient = (patientId) => {
+        // Envoyer la demande de suppression au backend
+        Axios.delete(`http://192.168.1.92:5000/api/patient/${patientId}`)
+            .then((response) => {
+                console.log('Patient supprimé avec succès !');
+                // Rafraîchir la liste des patients en rechargeant les données depuis le backend
+                Axios.get('http://192.168.1.92:5000/api/patient')
+                    .then((response) => {
+                        const responseData = Array.isArray(response.data)
+                            ? response.data
+                            : Object.values(response.data);
+                        setData(responseData);
+                    })
+                    .catch((error) => {
+                        console.error('Erreur lors de la récupération des données :', error);
+                    });
+            })
+            .catch((error) => {
+                console.error('Erreur lors de la suppression du patient :', error);
+                // Afficher un message d'erreur ou effectuer toute autre action en cas d'échec de la suppression
             });
     };
 
@@ -110,15 +175,15 @@ export default function Patient() {
 
     return (
         <ScrollView style={styles.container}>
-      {userRole === 'rh' || userRole === 'admin' ? ( // Condition pour afficher le bloc suivant si le rôle est "rh" ou "admin"
+            {userRole === 'rh' || userRole === 'admin' ? ( // Condition for displaying the "Add patient" button
                 <View style={styles.rhMessageContainer}>
-                    <TouchableOpacity onPress={() => setShowModal(true)}>
+                    <TouchableOpacity onPress={() => setShowAddModal(true)}>
                         <Text style={styles.rhMessage}>Ajouter un patient</Text>
                     </TouchableOpacity>
                 </View>
             ) : null}
 
-            <Modal visible={showModal} animationType="slide">
+            <Modal visible={showAddModal} animationType="slide">
                 <View style={styles.modalContainer}>
                     <Text style={styles.modalTitle}>Ajouter un nouveau patient</Text>
                     <TextInput
@@ -183,10 +248,68 @@ export default function Patient() {
                             }
                         }}
                     />
-                    <Button title="Ajouter" onPress={handleAjouterPatient} />
-                    <Button title="Annuler" onPress={() => setShowModal(false)} />
+                    <Button title="Ajouter" onPress={handleAddPatient} />
+                    <Button title="Annuler" onPress={() => setShowAddModal(false)} />
                 </View>
             </Modal>
+
+            <Modal visible={showEditModal} animationType="slide">
+  <View style={styles.modalContainer}>
+    <Text style={styles.modalTitle}>Modifier le patient</Text>
+    {/* Check if selectedPatientData is not null before accessing its properties */}
+    {selectedPatientData && (
+      <>
+        <TextInput
+          style={styles.input}
+          placeholder="Nom"
+          value={selectedPatientData?.nom}
+          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, nom: text })}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Prénom"
+          value={selectedPatientData?.prenom}
+          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, prenom: text })}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Âge"
+          keyboardType="numeric"
+          value={selectedPatientData?.age.toString()} // Convert age to string
+          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, age: text })}
+        />
+                <TextInput
+          style={styles.input}
+          placeholder="Taille"
+          keyboardType="numeric"
+          value={selectedPatientData?.taille.toString()} // Convert taille to string
+          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, taille: text })}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Poids"
+          keyboardType="numeric"
+          value={selectedPatientData?.poids.toString()} // Convert poids to string
+          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, poids: text })}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={selectedPatientData?.email}
+          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, email: text })}
+        />
+                <TextInput
+          style={styles.input}
+          placeholder="Mobile"
+          value={selectedPatientData?.mobile}
+          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, mobile: text })}
+        />
+      </>
+    )}
+    <Button title="Modifier" onPress={handleUpdatePatient} />
+    <Button title="Annuler" onPress={() => setShowEditModal(false)} />
+  </View>
+</Modal>
 
             <List.Section>
                 {data.map((patient) => (
@@ -200,6 +323,8 @@ export default function Patient() {
                             email={patient.email}
                             mobile={patient.mobile}
                             treatment={patient.traitement}
+                            onEdit={() => handleEditPatient(patient._id, { /* les données mises à jour du patient */ })}
+                            onDelete={() => handleDeletePatient(patient._id)}
                         />
                         <Divider />
                     </View>

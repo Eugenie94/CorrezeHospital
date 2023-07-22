@@ -14,8 +14,6 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [registerModalVisible, setRegisterModalVisible] = useState(false);
 
-
-
   const toggleRegisterModal = () => {
     setRegisterModalVisible(!registerModalVisible);
   };

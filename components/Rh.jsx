@@ -10,7 +10,7 @@ export default function Rh() {
   const [userRole, setUserRole] = useState(false); // Mettez à jour la valeur isAdmin en fonction de l'état de connexion
 
   useEffect(() => {
-    Axios.get('http://10.74.3.67:5000/api/rh')
+    Axios.get('http://192.168.1.92:5000/api/rh')
       .then((response) => {
         setData(response.data);
         setLoading(false);

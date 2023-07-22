@@ -1,36 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Card, Title, Subheading, useTheme } from 'react-native-paper';
+import { Card, Title, Subheading, useTheme, Button } from 'react-native-paper';
+import { IconButton } from 'react-native-paper';
 
-export default function CustomCard({ role, name, age, specialty, treatment, email, password }) {
+export default function CustomCard({ role, name, age, taille, poids, specialty, treatment, email, mobile, onEdit, onDelete }) {
+  const [userRole, setUserRole] = useState('');
   const theme = useTheme();
+
+  const renderPatientSpecificInfo = () => {
+    if (role === 'patient') {
+      return (
+        <>
+          {age && <Subheading>Âge : {age}</Subheading>}
+          {taille && <Subheading>Taille : {taille}</Subheading>}
+          {poids && <Subheading>Poids : {poids}</Subheading>}
+          {email && <Subheading>Email : {email}</Subheading>}
+          {mobile && <Subheading>Mobile : {mobile}</Subheading>}
+          {treatment && (
+            <View style={styles.treatmentContainer}>
+              <Subheading style={styles.treatmentTitle}>Traitement en cours :</Subheading>
+              <Subheading style={styles.treatmentDetail}>Médicament : {treatment.medicament}</Subheading>
+              <Subheading style={styles.treatmentDetail}>Dosage par jour : {treatment.dosageParJour}</Subheading>
+            </View>
+          )}
+        </>
+      );
+    } else if (role === 'doctor') {
+      return specialty && <Subheading>Spécialité : {specialty}</Subheading>;
+    } else {
+      return null;
+    }
+  };
 
   return (
     <Card style={styles.cardContainer}>
       <Card.Content>
         <Title style={{ color: theme.colors.primary }}>{name}</Title>
-        {role === 'patient' && age && <Subheading>Âge : {age}</Subheading>}
-        {role === 'doctor' && specialty && <Subheading>Spécialité : {specialty}</Subheading>}
-        {role === 'patient' && treatment && (
-          <View style={styles.treatmentContainer}>
-            <Subheading style={styles.treatmentTitle}>Traitement en cours :</Subheading>
-            <Subheading style={styles.treatmentDetail}>Médicament : {treatment.medicament}</Subheading>
-            <Subheading style={styles.treatmentDetail}>Dosage par jour : {treatment.dosageParJour}</Subheading>
-          </View>
-        )}
-        {role === 'doctor' && (
-          <View style={styles.doctorDetails}>
-            <Subheading style={styles.doctorDetail}>Email : {email}</Subheading>
-            <Subheading style={styles.doctorDetail}>Password : {password}</Subheading>
-          </View>
-        )}
-        {role === 'rh' && (
-          <View style={styles.rhDetails}>
-            <Subheading style={styles.rhDetail}>Email : {email}</Subheading>
-            <Subheading style={styles.rhDetail}>Password : {password}</Subheading>
-          </View>
-        )}
+        {renderPatientSpecificInfo()}
       </Card.Content>
+      {userRole === 'admin' ? ( // Only show the buttons if the user role is 'rh'
+        <Card.Actions style={styles.cardActions}>
+          <IconButton icon="pencil" size={20} onPress={onEdit} />
+          <IconButton icon="delete-outline" size={20} onPress={onDelete} />
+        </Card.Actions>
+      ) : null}
     </Card>
   );
 }
@@ -53,10 +66,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 8,
   },
-  doctorDetails: {
-    marginTop: 8,
-  },
-  doctorDetail: {
-    fontSize: 14,
+  cardActions: {
+    justifyContent: 'flex-end',
   },
 });

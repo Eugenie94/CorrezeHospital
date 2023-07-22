@@ -9,7 +9,7 @@ export default function Doctor() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Axios.get('http://10.74.3.67:5000/api/medecin')
+    Axios.get('http://192.168.1.92:5000/api/medecin')
       .then((response) => {
         setData(response.data);
         setLoading(false);
@@ -44,12 +44,13 @@ export default function Doctor() {
       <List.Section>
         {data.map((medecin) => (
           <View key={medecin._id}>
-            <CustomCard
-              role="doctor"
-              name={`${medecin.nom} ${medecin.prenom}`}
-              email={`${medecin.email}`}
-              password={`${medecin.password}`}
-            />
+
+<CustomCard
+                            role="doctor"
+                            name={`${medecin.nom} ${medecin.prenom}`}
+                            email={medecin.email}
+                            password={medecin.password}
+                        />
             <Divider />
           </View>
         ))}
