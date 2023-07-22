@@ -3,11 +3,11 @@ import { View, StyleSheet } from 'react-native';
 import { Card, Title, Subheading, useTheme, Button } from 'react-native-paper';
 import { IconButton } from 'react-native-paper';
 
-export default function CustomCard({ role, name, age, taille, poids, specialty, treatment, email, mobile, onEdit, onDelete }) {
+export default function CustomCard({ role, name, age, taille, poids, treatment, email, mobile, onEdit, onDelete }) {
   const [userRole, setUserRole] = useState('');
   const theme = useTheme();
 
-  const renderPatientSpecificInfo = () => {
+  const renderSpecificInfo = () => {
     if (role === 'patient') {
       return (
         <>
@@ -25,23 +25,29 @@ export default function CustomCard({ role, name, age, taille, poids, specialty, 
           )}
         </>
       );
-    } else if (role === 'doctor') {
-      return specialty && <Subheading>Spécialité : {specialty}</Subheading>;
+    } else if (role === 'medecin') { // Changed 'medecin' to 'doctor'
+      return (
+        <>
+          {email && <Subheading>Email : {email}</Subheading>}
+        </>
+      );
     } else {
       return null;
     }
   };
+  
 
   return (
     <Card style={styles.cardContainer}>
       <Card.Content>
         <Title style={{ color: theme.colors.primary }}>{name}</Title>
-        {renderPatientSpecificInfo()}
+        {renderSpecificInfo()}
       </Card.Content>
-      {userRole === 'admin' ? ( // Only show the buttons if the user role is 'rh'
+      {userRole === 'admin' ? (
         <Card.Actions style={styles.cardActions}>
-          <IconButton icon="pencil" size={20} onPress={onEdit} />
-          <IconButton icon="delete-outline" size={20} onPress={onDelete} />
+          {/* Utilisez IconButton au lieu de Button pour les icônes d'édition et de suppression */}
+          <IconButton icon="pencil" size={20} onPress={() => onEdit()} />
+          <IconButton icon="delete-outline" size={20} onPress={() => onDelete()} />
         </Card.Actions>
       ) : null}
     </Card>

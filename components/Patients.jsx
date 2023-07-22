@@ -175,7 +175,7 @@ export default function Patient() {
 
     return (
         <ScrollView style={styles.container}>
-            {userRole === 'rh' || userRole === 'admin' ? ( // Condition for displaying the "Add patient" button
+            {userRole === 'admin' || userRole === 'rh' ? ( // Condition for displaying the "Add patient" button
                 <View style={styles.rhMessageContainer}>
                     <TouchableOpacity onPress={() => setShowAddModal(true)}>
                         <Text style={styles.rhMessage}>Ajouter un patient</Text>

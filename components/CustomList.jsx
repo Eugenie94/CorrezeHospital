@@ -15,13 +15,13 @@
 //       try {
 //         setLoading(true);
 //         if (userRole === 'patient') {
-//           const response = await Axios.get('http://192.168.1.92:5000/api/patient');
+//           const response = await Axios.get('http://10.74.3.67:5000/api/patient');
 //           setData(response.data);
 //         } else if (userRole === 'doctor') {
-//           const response = await Axios.get('http://192.168.1.92:5000/api/medecin');
+//           const response = await Axios.get('http://10.74.3.67:5000/api/medecin');
 //           setData(response.data);
 //         } else if (userRole === 'rh') {
-//           const response = await Axios.get('http://192.168.1.92:5000/api/rh');
+//           const response = await Axios.get('http://10.74.3.67:5000/api/rh');
 //           setData(response.data);
 //         }
 //         setLoading(false);
