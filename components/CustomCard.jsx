@@ -59,9 +59,14 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
           <IconButton icon="calendar" size={24} color="black" onPress={handleToggleForm} />
         </Card.Actions>
       ) : null}
-      {showForm && userRole === 'medecin' && role === 'patient' && (
-        <CalendarMedecin />
-      )}
+{showForm && userRole === 'medecin' && role === 'patient' && (
+  <CalendarMedecin
+    visible={true}
+    medecinName={name}
+    medecinRole={userRole} // Passez le rôle du médecin ici
+    patientMobile={mobile}
+  />
+)}
     </Card>
   );
 }

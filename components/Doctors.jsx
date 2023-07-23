@@ -34,7 +34,7 @@ export default function Doctor() {
   };
 
   useEffect(() => {
-    Axios.get('http://192.168.1.92:5000/api/medecin')
+    Axios.get('http://192.168.1.44:5000/api/medecin')
       .then((response) => {
         const responseData = Array.isArray(response.data) ? response.data : Object.values(response.data);
         setData(responseData);
@@ -50,11 +50,11 @@ export default function Doctor() {
   console.log('UserRole:', userRole);
 
   const handleAddDoctor = () => {
-    Axios.post('http://192.168.1.92:5000/api/medecin', newDoctorData)
+    Axios.post('http://192.168.1.44:5000/api/medecin', newDoctorData)
       .then((response) => {
         console.log('Nouveau médecin ajouté avec succès !');
         setShowAddModal(false);
-        Axios.get('http://192.168.1.92:5000/api/medecin')
+        Axios.get('http://192.168.1.44:5000/api/medecin')
           .then((response) => {
             setData(response.data);
           })
@@ -77,11 +77,11 @@ export default function Doctor() {
 
   const handleUpdateDoctor = () => {
     if (selectedDoctorData) {
-      Axios.put(`http://192.168.1.92:5000/api/medecin/${selectedDoctorData._id}`, selectedDoctorData)
+      Axios.put(`http://192.168.1.44:5000/api/medecin/${selectedDoctorData._id}`, selectedDoctorData)
         .then((response) => {
           console.log('Médecin mis à jour avec succès !');
           setShowEditModal(false);
-          Axios.get('http://192.168.1.92:5000/api/medecin')
+          Axios.get('http://192.168.1.44:5000/api/medecin')
             .then((response) => {
               setData(response.data);
             })
@@ -96,10 +96,10 @@ export default function Doctor() {
   };
 
   const handleDeleteDoctor = (doctorId) => {
-    Axios.delete(`http://192.168.1.92:5000/api/medecin/${doctorId}`)
+    Axios.delete(`http://192.168.1.44:5000/api/medecin/${doctorId}`)
       .then((response) => {
         console.log('Médecin supprimé avec succès !');
-        Axios.get('http://192.168.1.92:5000/api/medecin')
+        Axios.get('http://192.168.1.44:5000/api/medecin')
           .then((response) => {
             setData(response.data);
           })

@@ -1,10 +1,8 @@
-import React from 'react';
-import { View, Pressable, Linking, Platform, Text } from 'react-native';
+import React, { useState } from 'react';
+import { View, Pressable, Text, Linking, Platform } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
-export default function SendMessage({ mobile }) {
-  const message = 'Bonjour, ceci est un SMS envoyé depuis mon application React Native !';
-
+export default function SendMessage({ mobile, message }) {
   const handleSendSMS = () => {
     const smsUrl = Platform.select({
       ios: `sms:${mobile}&body=${encodeURIComponent(message)}`,
@@ -29,4 +27,4 @@ export default function SendMessage({ mobile }) {
       </Pressable>
     </View>
   );
-};
+}

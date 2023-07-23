@@ -13,7 +13,7 @@ export default function Register({closeModal}) {
   const handleRegister = async () => {
     try {
       // Envoyer une requête POST au serveur pour l'inscription
-      await axios.post('http://10.74.3.71:5000/api/register', {
+      await axios.post('http://192.168.1.44:5000/api/register', {
         email,
         password,
         role
@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
     color: 'red',
     marginBottom: 10,
   },
-  // Styles for the modal
   modalContainer: {
     flex: 1,
     alignItems: 'center',
