@@ -5,10 +5,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomCard from './CustomCard';
 import Axios from 'axios';
 
-export default function Doctor() {
+export default function Doctor({userRole}) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [userRole, setUserRole] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [newDoctorData, setNewDoctorData] = useState({
@@ -18,20 +17,13 @@ export default function Doctor() {
   });
   const [selectedDoctorData, setSelectedDoctorData] = useState(null);
 
-  const Role = async () => {
-    try {
-      const userJson = await AsyncStorage.getItem('user');
-      if (userJson !== null) {
-        const user = JSON.parse(userJson);
-        setUserRole(user.role);
-      } else {
-        console.log('Aucune valeur pour la clé "user" dans AsyncStorage.');
-      }
-    } catch (error) {
-      console.log('Erreur lors de la récupération de la valeur :', error);
-      return null;
-    }
+
+  const validateEmail = (email) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
   };
+
+
 
   useEffect(() => {
     Axios.get('http://192.168.1.44:5000/api/medecin')
@@ -44,12 +36,14 @@ export default function Doctor() {
         console.error('Erreur lors de la récupération des données :', error);
         setLoading(false);
       });
-    Role();
   }, []);
 
-  console.log('UserRole:', userRole);
 
   const handleAddDoctor = () => {
+    if (!validateEmail(newDoctorData.email)) {
+      console.error('Invalid email format');
+      return;
+    }
     Axios.post('http://192.168.1.44:5000/api/medecin', newDoctorData)
       .then((response) => {
         console.log('Nouveau médecin ajouté avec succès !');
@@ -76,6 +70,10 @@ export default function Doctor() {
   };
 
   const handleUpdateDoctor = () => {
+    if (selectedDoctorData && !validateEmail(selectedDoctorData.email)) {
+      console.error('Invalid email format');
+      return;
+    }
     if (selectedDoctorData) {
       Axios.put(`http://192.168.1.44:5000/api/medecin/${selectedDoctorData._id}`, selectedDoctorData)
         .then((response) => {
@@ -131,15 +129,11 @@ export default function Doctor() {
 
   return (
     <ScrollView style={styles.container}>
-    {userRole === 'admin' ? (
-      // Condition for displaying the "Add doctor" button
       <View style={styles.rhMessageContainer}>
         <TouchableOpacity onPress={() => setShowAddModal(true)}>
           <Text style={styles.rhMessage}>Ajouter un médecin</Text>
         </TouchableOpacity>
       </View>
-    ) : null}
-
       <Modal visible={showAddModal} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Ajouter un nouveau médecin</Text>
@@ -205,7 +199,7 @@ export default function Doctor() {
             email={medecin.email}
             onEdit={() => handleEditDoctor(medecin._id, { nom: medecin.nom, prenom: medecin.prenom, email: medecin.email })}
             onDelete={() => handleDeleteDoctor(medecin._id)}
-            userRole={userRole} // Passer userRole en tant que prop
+            userRole={userRole}
           />
           <Divider />
         </View>

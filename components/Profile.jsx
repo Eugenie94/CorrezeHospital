@@ -8,7 +8,6 @@ export default function Profile ({setUserRole}) {
   const logout = async () => {
     try {
       // Clear user's data from AsyncStorage
-      await AsyncStorage.removeItem('isLoggedIn');
       await AsyncStorage.removeItem('user');
 
       // Update the login state

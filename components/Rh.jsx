@@ -18,6 +18,14 @@ export default function Rh() {
   });
   const [selectedRhData, setSelectedRhData] = useState(null);
 
+  const validateEmail = (email) => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email);
+  };
+
+
+  
+
   useEffect(() => {
     // Fonction pour récupérer le rôle de l'utilisateur à partir du AsyncStorage
     const getRoleFromAsyncStorage = async () => {
@@ -47,10 +55,11 @@ export default function Rh() {
     getRoleFromAsyncStorage(); // Appeler la fonction pour récupérer le rôle de l'utilisateur
   }, []);
 
-
-  console.log('UserRole:', userRole);
-
   const handleAddRh = () => {
+    if (!validateEmail(newRhData.email)) {
+      console.error('Invalid email format');
+      return;
+    }
     Axios.post('http://192.168.1.44:5000/api/rh', newRhData)
       .then((response) => {
         console.log('Nouveau RH ajouté avec succès !');
@@ -77,6 +86,10 @@ export default function Rh() {
   };
 
   const handleUpdateRh = () => {
+    if (!validateEmail(selectedRhData.email)) {
+      console.error('Invalid email format');
+      return;
+    }
     if (selectedRhData) {
       Axios.put(`http://192.168.1.44:5000/api/rh/${selectedRhData._id}`, selectedRhData)
         .then((response) => {
