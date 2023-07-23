@@ -5,10 +5,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomCard from './CustomCard';
 import Axios from 'axios';
 
-export default function Patient() {
+export default function Patient({userRole}) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [userRole, setUserRole] = useState('');
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [newPatientData, setNewPatientData] = useState({
@@ -32,21 +31,6 @@ export default function Patient() {
     });
     const [selectedPatientData, setSelectedPatientData] = useState(null);
 
-    const Role = async () => {
-        try {
-            const userJson = await AsyncStorage.getItem('user');
-            if (userJson !== null) {
-                const user = JSON.parse(userJson);
-                setUserRole(user.role);
-            } else {
-                console.log('Aucune valeur pour la clé "user" dans AsyncStorage.');
-            }
-        } catch (error) {
-            console.log('Erreur lors de la récupération de la valeur :', error);
-            return null;
-        }
-    };
-
     useEffect(() => {
         Axios.get('http://192.168.1.44:5000/api/patient')
             .then((response) => {
@@ -60,14 +44,12 @@ export default function Patient() {
                 console.error('Erreur lors de la récupération des données :', error);
                 setLoading(false);
             });
-        Role(); // Appeler Role ici pour mettre à jour la valeur de userRole
+
     }, []);
 
     useEffect(() => {
-        Role();
     }, []);
 
-    console.log('UserRole:', userRole); // Vérifiez la valeur de userRole ici
 
     const handleAddPatient = () => {
         // Envoyer les données du nouveau patient au backend pour l'ajouter dans la base de données
