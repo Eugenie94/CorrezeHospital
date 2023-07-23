@@ -28,20 +28,11 @@ const Login = ({setUserRole} ) => {
       const { user } = response.data;
 
       try {
-        await AsyncStorage.setItem('isLoggedIn', 'true');
         await AsyncStorage.setItem('user', JSON.stringify(user));
         setUserRole(user.role); // update the userRole state variable
         
       } catch (error) {
         console.error('Error storing data:', error);
-      }
-
-      const userJson = await AsyncStorage.getItem('user');
-  
-      if (userJson !== null) {
-        // Convertir la valeur JSON en objet JavaScript
-        const user = JSON.parse(userJson);
-        console.log(user.role)
       }
       // Redirect to the Home screen after successful login
       navigation.navigate('Accueil'); 
