@@ -14,10 +14,7 @@ const medecinSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  password: {
-    type: String,
-  },
-});
+},{versionKey : false});
 
 const Medecin = mongoose.model('medecin', medecinSchema, 'medecin');
 

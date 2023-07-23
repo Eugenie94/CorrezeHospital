@@ -28,10 +28,7 @@ export default function App() {
         const userRoleData = JSON.parse(await AsyncStorage.getItem('user'));
         const login = JSON.parse(await AsyncStorage.getItem('isLoggedIn'));
         setUserRole(userRoleData.role)
-        console.log('User role:', userRoleData.role);
-        console.log('User login:', login); 
-      } catch (error) {
-        console.error('Error fetching user role:', error);
+      } catch (error) {    
       }
     };
 
@@ -65,7 +62,7 @@ export default function App() {
             />
             <Tab.Screen
               name="Patient"
-              component={Patients}
+              children={() => <Patients userRole={userRole} />}
               options={({ color }) => ({
                 tabBarIcon: ({ color }) => (
                   <Icon name="toolbox" size={30} color={color} />
@@ -116,7 +113,7 @@ export default function App() {
             />
             <Tab.Screen
               name="Patient"
-              component={Patients}
+              children={() => <Patients userRole={userRole} />}
               options={({ color }) => ({
                 tabBarIcon: ({ color }) => (
                   <Icon name="toolbox" size={30} color={color} />
