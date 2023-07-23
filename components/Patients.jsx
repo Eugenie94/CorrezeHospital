@@ -48,7 +48,7 @@ export default function Patient() {
     };
 
     useEffect(() => {
-        Axios.get('http://192.168.1.92:5000/api/patient')
+        Axios.get('http://192.168.1.44:5000/api/patient')
             .then((response) => {
                 const responseData = Array.isArray(response.data)
                     ? response.data
@@ -71,13 +71,13 @@ export default function Patient() {
 
     const handleAddPatient = () => {
         // Envoyer les données du nouveau patient au backend pour l'ajouter dans la base de données
-        Axios.post('http://192.168.1.92:5000/api/patient', newPatientData)
+        Axios.post('http://192.168.1.44:5000/api/patient', newPatientData)
             .then((response) => {
                 console.log('Nouveau patient ajouté avec succès !');
                 // Fermer la modal après avoir ajouté le patient
                 setShowAddModal(false);
                 // Rafraîchir la liste des patients en rechargeant les données depuis le backend
-                Axios.get('http://192.168.1.92:5000/api/patient')
+                Axios.get('http://192.168.1.44:5000/api/patient')
                     .then((response) => {
                         const responseData = Array.isArray(response.data)
                             ? response.data
@@ -109,13 +109,13 @@ export default function Patient() {
         // Vérifier si selectedPatientData n'est pas null
         if (selectedPatientData) {
             // Envoyer les données mises à jour au backend pour modifier le patient dans la base de données
-            Axios.put(`http://192.168.1.92:5000/api/patient/${selectedPatientData._id}`, selectedPatientData)
+            Axios.put(`http://192.168.1.44:5000/api/patient/${selectedPatientData._id}`, selectedPatientData)
                 .then((response) => {
                     console.log('Patient mis à jour avec succès !');
                     // Fermer la modal après avoir mis à jour le patient
                     setShowEditModal(false);
                     // Rafraîchir la liste des patients en rechargeant les données depuis le backend
-                    Axios.get('http://192.168.1.92:5000/api/patient')
+                    Axios.get('http://192.168.1.44:5000/api/patient')
                         .then((response) => {
                             const responseData = Array.isArray(response.data)
                                 ? response.data
@@ -135,11 +135,11 @@ export default function Patient() {
 
     const handleDeletePatient = (patientId) => {
         // Envoyer la demande de suppression au backend
-        Axios.delete(`http://192.168.1.92:5000/api/patient/${patientId}`)
+        Axios.delete(`http://192.168.1.44:5000/api/patient/${patientId}`)
             .then((response) => {
                 console.log('Patient supprimé avec succès !');
                 // Rafraîchir la liste des patients en rechargeant les données depuis le backend
-                Axios.get('http://192.168.1.92:5000/api/patient')
+                Axios.get('http://192.168.1.44:5000/api/patient')
                     .then((response) => {
                         const responseData = Array.isArray(response.data)
                             ? response.data

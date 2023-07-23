@@ -34,7 +34,7 @@ export default function Rh() {
       }
     };
 
-    Axios.get('http://192.168.1.92:5000/api/rh')
+    Axios.get('http://192.168.1.44:5000/api/rh')
       .then((response) => {
         setData(response.data);
         setLoading(false);
@@ -51,11 +51,11 @@ export default function Rh() {
   console.log('UserRole:', userRole);
 
   const handleAddRh = () => {
-    Axios.post('http://192.168.1.92:5000/api/rh', newRhData)
+    Axios.post('http://192.168.1.44:5000/api/rh', newRhData)
       .then((response) => {
         console.log('Nouveau RH ajouté avec succès !');
         setShowAddModal(false);
-        Axios.get('http://192.168.1.92:5000/api/rh')
+        Axios.get('http://192.168.1.44:5000/api/rh')
           .then((response) => {
             setData(response.data);
           })
@@ -78,10 +78,10 @@ export default function Rh() {
 
   const handleUpdateRh = () => {
     if (selectedRhData) {
-      Axios.put(`http://192.168.1.92:5000/api/rh/${selectedRhData._id}`, selectedRhData)
+      Axios.put(`http://192.168.1.44:5000/api/rh/${selectedRhData._id}`, selectedRhData)
         .then((response) => {
           setShowEditModal(false);
-          Axios.get('http://192.168.1.92:5000/api/rh')
+          Axios.get('http://192.168.1.44:5000/api/rh')
             .then((response) => {
               setData(response.data);
             })
@@ -96,9 +96,9 @@ export default function Rh() {
   };
 
   const handleDeleteRh = (rhId) => {
-    Axios.delete(`http://192.168.1.92:5000/api/rh/${rhId}`)
+    Axios.delete(`http://192.168.1.44:5000/api/rh/${rhId}`)
       .then((response) => {
-        Axios.get('http://192.168.1.92:5000/api/rh')
+        Axios.get('http://192.168.1.44:5000/api/rh')
           .then((response) => {
             setData(response.data);
           })
@@ -159,12 +159,6 @@ export default function Rh() {
             value={newRhData.email}
             onChangeText={(text) => setNewRhData({ ...newRhData, email: text })}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Mot de passe"
-            value={newRhData.password}
-            onChangeText={(text) => setNewRhData({ ...newRhData, password: text })}
-          />
           <Button title="Ajouter" onPress={handleAddRh} />
           <Button title="Annuler" onPress={() => setShowAddModal(false)} />
         </View>
@@ -194,12 +188,6 @@ export default function Rh() {
                 value={selectedRhData?.email}
                 onChangeText={(text) => setSelectedRhData({ ...selectedRhData, email: text })}
                 />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Mot de passe"
-                  value={selectedRhData?.password}
-                  onChangeText={(text) => setSelectedRhData({ ...selectedRhData, password: text })}
-                />
               </>
             )}
             <Button title="Modifier" onPress={handleUpdateRh} />
@@ -214,8 +202,7 @@ export default function Rh() {
                 role="rh"
                 name={`${rh.nom} ${rh.prenom}`}
                 email={rh.email}
-                password={rh.password}
-                onEdit={() => handleEditRh(rh._id, { nom: rh.nom, prenom: rh.prenom, email: rh.email, password: rh.password })}
+                onEdit={() => handleEditRh(rh._id, { nom: rh.nom, prenom: rh.prenom, email: rh.email})}
                 onDelete={() => handleDeleteRh(rh._id)}
                 userRole={userRole} // Passer userRole en tant que prop
               />
