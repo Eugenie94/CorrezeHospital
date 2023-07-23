@@ -62,8 +62,7 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
 {showForm && userRole === 'medecin' && role === 'patient' && (
   <CalendarMedecin
     visible={true}
-    medecinName={name}
-    medecinRole={userRole} // Passez le rôle du médecin ici
+    medecinConnecteName={userMedecinName} // Ensure you are passing the correct prop name here
     patientMobile={mobile}
   />
 )}

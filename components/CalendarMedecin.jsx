@@ -3,9 +3,19 @@ import { View, Button, TextInput, StyleSheet, Text } from 'react-native';
 import * as Calendar from 'expo-calendar';
 import SendMessage from './SendMessage'; // Importez le composant SendMessage ici
 
-export default function CalendarMedecin({ visible, medecinName, medecinRole, patientMobile }) {
+export default function CalendarMedecin({ visible, medecinConnecteName, patientMobile }) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+
+  const handleSendSMS = () => {
+    // Vérifiez si le message est défini avant d'envoyer le SMS
+    if (medecinConnecteName && startDate) {
+      const message = `Vous avez un rendez-vous planifié avec ${medecinConnecteName} le ${startDate}.`;
+      SendMessage({ mobile: patientMobile, message: message });
+    } else {
+      console.error('Impossible d\'envoyer le SMS car le nom du médecin ou la date du rendez-vous est manquant.');
+    }
+  };
 
   const handleAddEvent = async () => {
     // Vérifier si les champs sont remplis
@@ -31,7 +41,7 @@ export default function CalendarMedecin({ visible, medecinName, medecinRole, pat
       const selectedCalendar = calendars[0];
 
       const event = {
-        title: medecinName,
+        title: `Rendez-vous avec ${medecinConnecteName}`, // Use the name of the currently logged-in doctor here
         color: 'blue',
         startDate: new Date(startDate),
         endDate: new Date(endDate),
@@ -44,15 +54,11 @@ export default function CalendarMedecin({ visible, medecinName, medecinRole, pat
           },
         ],
       };
-
       const eventId = await Calendar.createEventAsync(selectedCalendar.id, event);
 
       if (eventId) {
-        // Envoyer le SMS au patient avec les détails du rendez-vous
-        const message = `Vous avez un rendez-vous planifié avec ${medecinName} le ${startDate}.`;
-        SendMessage({ mobile: patientMobile, message: message });
-
-        alert(`Rendez-vous planifié avec ${medecinName} le ${startDate}`);
+        handleSendSMS(); // Appeler la fonction pour envoyer le SMS avant l'événement
+        alert(`Rendez-vous planifié avec ${medecinConnecteName} le ${startDate}`);
       } else {
         alert("Erreur lors de la création de l'événement");
       }

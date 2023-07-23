@@ -31,7 +31,10 @@ const Login = ({setUserRole} ) => {
         await AsyncStorage.setItem('isLoggedIn', 'true');
         await AsyncStorage.setItem('user', JSON.stringify(user));
         setUserRole(user.role); // update the userRole state variable
-        
+        // Check if the doctorId field exists in the user object
+      if (user.doctorId) {
+        await AsyncStorage.setItem('doctorId', user.doctorId); // Store the doctorId in AsyncStorage
+      }
       } catch (error) {
         console.error('Error storing data:', error);
       }
