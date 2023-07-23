@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet,  TouchableOpacity, Text } from 'react-native';
 import { Card, Title, Subheading, useTheme } from 'react-native-paper';
 import { IconButton } from 'react-native-paper';
 import SendMessage from './SendMessage';
 import CalendarMedecin from './CalendarMedecin';
 
-export default function CustomCard({ role, name, age, taille, poids, treatment, email, mobile, onEdit, onDelete, userRole }) {
+export default function CustomCard({ role, name, age, taille, poids, treatment, email, mobile, onEdit, onDelete, userRole, onDeleteTreatment, onAddTreatment, patientId }) {
   const theme = useTheme();
   const [showForm, setShowForm] = useState(false);
 
@@ -21,10 +21,32 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
           {treatment && (
             <View style={styles.treatmentContainer}>
               <Subheading style={styles.treatmentTitle}>Traitement en cours :</Subheading>
-              <Subheading style={styles.treatmentDetail}>Médicament : {treatment.medicament}</Subheading>
-              <Subheading style={styles.treatmentDetail}>Dosage par jour : {treatment.dosageParJour}</Subheading>
+              {treatment.map((item, index) => (
+                  <View key={index}>
+                    <Subheading style={styles.treatmentDetail}>Médicament : {item.medicament}</Subheading>
+                    <Subheading style={styles.treatmentDetail}>Dosage par jour : {item.dosageParJour}</Subheading>
+                    {userRole === 'medecin' ? (
+                    <>
+                       <TouchableOpacity
+                          style={styles.deleteButton}
+                          onPress={() => onDeleteTreatment(patientId, item._id)}
+                       >
+                          <Text style={styles.deleteButtonText}>Supprimer le traitement </Text> 
+                        </TouchableOpacity>
+                    </>
+                  ) : null}
+                  </View>
+                ))}
             </View>
           )}
+          {userRole === 'medecin' ? (
+                    <>
+                      <TouchableOpacity style={styles.addButton} onPress={() => onAddTreatment(patientId)}>
+                          <Text style={styles.addButtonText}>Ajouter un traitement</Text>
+                      </TouchableOpacity>
+                    </>
+                  ) : null
+          }
         </>
       );
     } else {
@@ -59,14 +81,9 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
           <IconButton icon="calendar" size={24} color="black" onPress={handleToggleForm} />
         </Card.Actions>
       ) : null}
-{showForm && userRole === 'medecin' && role === 'patient' && (
-  <CalendarMedecin
-    visible={true}
-    medecinName={name}
-    medecinRole={userRole} // Passez le rôle du médecin ici
-    patientMobile={mobile}
-  />
-)}
+      {showForm && userRole === 'medecin' && role === 'patient' && (
+        <CalendarMedecin />
+      )}
     </Card>
   );
 }
@@ -97,4 +114,26 @@ const styles = StyleSheet.create({
   cardActions: {
     justifyContent: 'flex-end',
   },
+  deleteButton: {
+    backgroundColor: 'red',
+    padding: 8,
+    borderRadius: 4,
+    marginTop: 4,
+    alignItems: 'center',
+  },
+  deleteButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  addButton: {
+    backgroundColor: 'blue',
+    padding: 8,
+    borderRadius: 4,
+    marginTop: 4,
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  }
 });
