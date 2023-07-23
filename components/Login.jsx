@@ -20,7 +20,7 @@ const Login = ({setUserRole} ) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.1.92:5000/api/login', {
+      const response = await axios.post('http://192.168.1.44:5000/api/login', {
         email,
         password,
       });
