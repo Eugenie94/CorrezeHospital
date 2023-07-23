@@ -3,7 +3,7 @@ import { View, Button, TextInput, StyleSheet, Text } from 'react-native';
 import * as Calendar from 'expo-calendar';
 import SendMessage from './SendMessage'; // Importez le composant SendMessage ici
 
-export default function CalendarMedecin({ visible, medecinConnecteName, patientMobile }) {
+export default function CalendarMedecin({ visible, medecinConnecteName, patientMobile, medecinName }) {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
@@ -41,7 +41,7 @@ export default function CalendarMedecin({ visible, medecinConnecteName, patientM
       const selectedCalendar = calendars[0];
 
       const event = {
-        title: `Rendez-vous avec ${medecinConnecteName}`, // Use the name of the currently logged-in doctor here
+        title: `Rendez-vous programmé avec ${medecinName}`,
         color: 'blue',
         startDate: new Date(startDate),
         endDate: new Date(endDate),
