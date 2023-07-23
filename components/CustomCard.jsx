@@ -12,6 +12,7 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
 
   const message = 'Bonjour, ceci est un SMS envoyé depuis mon application React Native !';
 
+  // Fonction pour rendre les informations spécifiques en fonction du rôle (patient ou médecin)
   const renderSpecificInfo = () => {
     if (role === 'patient') {
       return (
@@ -25,31 +26,30 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
             <View style={styles.treatmentContainer}>
               <Subheading style={styles.treatmentTitle}>Traitement en cours :</Subheading>
               {treatment.map((item, index) => (
-                  <View key={index}>
-                    <Subheading style={styles.treatmentDetail}>Médicament : {item.medicament}</Subheading>
-                    <Subheading style={styles.treatmentDetail}>Dosage par jour : {item.dosageParJour}</Subheading>
-                    {userRole === 'medecin' ? (
+                <View key={index}>
+                  <Subheading style={styles.treatmentDetail}>Médicament : {item.medicament}</Subheading>
+                  <Subheading style={styles.treatmentDetail}>Dosage par jour : {item.dosageParJour}</Subheading>
+                  {userRole === 'medecin' ? (
                     <>
-                       <TouchableOpacity
-                          style={styles.deleteButton}
-                          onPress={() => onDeleteTreatment(patientId, item._id)}
-                       >
-                          <Text style={styles.deleteButtonText}>Supprimer le traitement </Text> 
-                        </TouchableOpacity>
+                      <TouchableOpacity
+                        style={styles.deleteButton}
+                        onPress={() => onDeleteTreatment(patientId, item._id)}
+                      >
+                        <Text style={styles.deleteButtonText}>Supprimer le traitement </Text> 
+                      </TouchableOpacity>
                     </>
                   ) : null}
-                  </View>
-                ))}
+                </View>
+              ))}
             </View>
           )}
           {userRole === 'medecin' ? (
-                    <>
-                      <TouchableOpacity style={styles.addButton} onPress={() => onAddTreatment(patientId)}>
-                          <Text style={styles.addButtonText}>Ajouter un traitement</Text>
-                      </TouchableOpacity>
-                    </>
-                  ) : null
-          }
+            <>
+              <TouchableOpacity style={styles.addButton} onPress={() => onAddTreatment(patientId)}>
+                <Text style={styles.addButtonText}>Ajouter un traitement</Text>
+              </TouchableOpacity>
+            </>
+          ) : null}
         </>
       );
     } else {
@@ -57,10 +57,11 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
         <>
           {email && <Subheading>Email : {email}</Subheading>}
         </>
-      )
+      );
     }
   };
 
+  // Fonction pour gérer l'affichage/masquage du formulaire de calendrier
   const handleToggleForm = () => {
     setShowForm(!showForm);
   };
@@ -73,32 +74,36 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
         </View>
         {renderSpecificInfo()}
       </Card.Content>
+      {/* Actions spécifiques selon le rôle de l'utilisateur */}
       {userRole === 'admin' ? (
         <Card.Actions style={styles.cardActions}>
+          {/* Boutons pour éditer ou supprimer */}
           <IconButton icon="pencil" size={20} onPress={() => onEdit()} />
           <IconButton icon="delete-outline" size={20} onPress={() => onDelete()} />
         </Card.Actions>
       ) : userRole === 'medecin' && role === 'patient' ? (
         <Card.Actions style={styles.cardActions}>
-          {/* Pass the message as a prop to the SendMessage component */}
+          {/* Composant SendMessage pour envoyer un SMS */}
           <SendMessage mobile={mobile} message={message} />
+          {/* Bouton pour afficher/masquer le formulaire de calendrier */}
           <IconButton icon="calendar" size={24} color="black" onPress={handleToggleForm} />
         </Card.Actions>
       ) : null}
+      {/* Afficher le formulaire de calendrier si showForm est true */}
       {showForm && userRole === 'medecin' && role === 'patient' && (
-    <CalendarMedecin
-    visible={true}
-    medecinConnecteName={name}
-    patientMobile={mobile}
-    medecinName="Dr. Dupont" 
-  />
+        <CalendarMedecin
+          visible={true}
+          medecinConnecteName={name}
+          patientMobile={mobile}
+          medecinName="Dr. Dupont" 
+        />
       )}
     </Card>
   );
 }
 
-
 const styles = StyleSheet.create({
+  // Styles pour le composant CustomCard
   cardContainer: {
     backgroundColor: '#f7f7f7',
     borderRadius: 8,

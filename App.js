@@ -90,7 +90,7 @@ export default function App() {
               })}
             />
             <Tab.Screen
-              name="Profil"
+              name="Deconnexion"
               children={() => <Profile setUserRole={setUserRole} />}
               options={({ color }) => ({
                 tabBarIcon: ({ color }) => (
@@ -123,7 +123,7 @@ export default function App() {
               })}
             />
             <Tab.Screen
-              name="Profil"
+              name="Deconnexion"
               children={() => <Profile setUserRole={setUserRole} />}
               options={({ color }) => ({
                 tabBarIcon: ({ color }) => (

@@ -1,16 +1,17 @@
-import React from 'react'
+import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, KeyboardAvoidingView, Modal } from 'react-native';
 import { Button } from 'react-native-paper';
 
-export default function Profile ({setUserRole}) {
+export default function Profile({ setUserRole }) {
 
+  // Fonction de déconnexion (logout)
   const logout = async () => {
     try {
-      // Clear user's data from AsyncStorage
+      // Supprimer les informations de l'utilisateur stockées en local
       await AsyncStorage.removeItem('user');
 
-      // Update the login state
+      // Appeler la fonction setUserRole pour réinitialiser le rôle de l'utilisateur (le déconnecter)
       setUserRole();
     } catch (error) {
       console.error(error);
@@ -19,13 +20,10 @@ export default function Profile ({setUserRole}) {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      {/* Your existing components... */}
-      
-        <Button mode="contained" onPress={logout} style={{ marginTop: 10 }}>
-          Logout
-        </Button>
+      {/* Bouton "Logout" qui appelle la fonction de déconnexion (logout) au clic */}
+      <Button mode="contained" onPress={logout} style={{ marginTop: 10 }}>
+        Logout
+      </Button>
     </View>
   );
 };
-
-

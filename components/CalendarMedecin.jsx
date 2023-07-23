@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Button, TextInput, StyleSheet, Text } from 'react-native';
 import * as Calendar from 'expo-calendar';
-import SendMessage from './SendMessage'; // Importez le composant SendMessage ici
+import SendMessage from './SendMessage';
 
 export default function CalendarMedecin({ visible, medecinConnecteName, patientMobile, medecinName }) {
   const [startDate, setStartDate] = useState('');
@@ -40,6 +40,7 @@ export default function CalendarMedecin({ visible, medecinConnecteName, patientM
 
       const selectedCalendar = calendars[0];
 
+      // Définir les détails de l'événement à ajouter au calendrier
       const event = {
         title: `Rendez-vous programmé avec ${medecinName}`,
         color: 'blue',
@@ -54,16 +55,19 @@ export default function CalendarMedecin({ visible, medecinConnecteName, patientM
           },
         ],
       };
+
+      // Créer l'événement dans le calendrier
       const eventId = await Calendar.createEventAsync(selectedCalendar.id, event);
 
       if (eventId) {
-        handleSendSMS(); // Appeler la fonction pour envoyer le SMS avant l'événement
+        // Envoyer un SMS pour confirmer le rendez-vous
+        handleSendSMS();
         alert(`Rendez-vous planifié avec ${medecinConnecteName} le ${startDate}`);
       } else {
         alert("Erreur lors de la création de l'événement");
       }
     } catch (error) {
-      // Gérer l'erreur ici
+      // Gérer l'erreur ici en cas d'échec de la planification de l'événement
       console.error('Erreur lors de la planification de l\'événement :', error);
       alert('Une erreur est survenue lors de la planification de l\'événement.');
     }
@@ -71,18 +75,21 @@ export default function CalendarMedecin({ visible, medecinConnecteName, patientM
 
   return (
     <View style={styles.container}>
+      {/* Champ de saisie pour la date du rendez-vous */}
       <TextInput
         style={styles.input}
         placeholder="Date du rendez-vous (ex. 2023-07-20 10:00)"
         value={startDate}
         onChangeText={setStartDate}
       />
+      {/* Champ de saisie pour la date de fin du rendez-vous */}
       <TextInput
         style={styles.input}
         placeholder="Date de fin (ex. 2023-07-20 11:00)"
         value={endDate}
         onChangeText={setEndDate}
       />
+      {/* Bouton pour planifier le rendez-vous */}
       <Button title="Planifier un rendez-vous" onPress={handleAddEvent} />
     </View>
   );

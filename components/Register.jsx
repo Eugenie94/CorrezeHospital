@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Modal } from 'react-native';
 import axios from 'axios';
 
-
-export default function Register({closeModal}) {
-  const [modalVisible, setModalVisible] = useState(false);
+export default function Register({ closeModal }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
@@ -20,7 +18,7 @@ export default function Register({closeModal}) {
       });
 
       // Afficher le modal de réussite et masquer le formulaire
-      closeModal();
+      setModalVisible(true);
     } catch (error) {
       // Gérer les erreurs d'inscription
       if (error.response && error.response.data && error.response.data.error) {
@@ -31,6 +29,15 @@ export default function Register({closeModal}) {
     }
   };
 
+  const closeModalAndResetForm = () => {
+    setModalVisible(false);
+    setEmail('');
+    setPassword('');
+    setRole('');
+    closeModal();
+  };
+
+  const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -69,12 +76,12 @@ export default function Register({closeModal}) {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={closeModal}
+        onRequestClose={closeModalAndResetForm}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalText}>Inscription réussie!</Text>
-            <TouchableOpacity style={styles.modalButton} onPress={closeModal}>
+            <TouchableOpacity style={styles.modalButton} onPress={closeModalAndResetForm}>
               <Text style={styles.modalButtonText}>OK</Text>
             </TouchableOpacity>
           </View>
@@ -83,6 +90,7 @@ export default function Register({closeModal}) {
     </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {

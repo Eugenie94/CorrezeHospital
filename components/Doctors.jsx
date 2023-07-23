@@ -17,14 +17,13 @@ export default function Doctor({userRole}) {
   });
   const [selectedDoctorData, setSelectedDoctorData] = useState(null);
 
-
+  // Fonction pour valider le format de l'email
   const validateEmail = (email) => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
   };
 
-
-
+  // Récupération des données des médecins lors du chargement du composant
   useEffect(() => {
     Axios.get('http://192.168.1.92:5000/api/medecin')
       .then((response) => {
@@ -38,7 +37,7 @@ export default function Doctor({userRole}) {
       });
   }, []);
 
-
+  // Fonction pour ajouter un nouveau médecin
   const handleAddDoctor = () => {
     if (!validateEmail(newDoctorData.email)) {
       console.error('Invalid email format');
@@ -48,6 +47,7 @@ export default function Doctor({userRole}) {
       .then((response) => {
         console.log('Nouveau médecin ajouté avec succès !');
         setShowAddModal(false);
+        // Mettre à jour la liste des médecins après l'ajout
         Axios.get('http://192.168.1.92:5000/api/medecin')
           .then((response) => {
             setData(response.data);
@@ -61,6 +61,7 @@ export default function Doctor({userRole}) {
       });
   };
 
+  // Fonction pour afficher le formulaire de modification du médecin
   const handleEditDoctor = (doctorId, updatedData) => {
     const doctorToUpdate = data.find((doctor) => doctor._id === doctorId);
     if (doctorToUpdate) {
@@ -69,6 +70,7 @@ export default function Doctor({userRole}) {
     }
   };
 
+  // Fonction pour mettre à jour le médecin
   const handleUpdateDoctor = () => {
     if (selectedDoctorData && !validateEmail(selectedDoctorData.email)) {
       console.error('Invalid email format');
@@ -79,6 +81,7 @@ export default function Doctor({userRole}) {
         .then((response) => {
           console.log('Médecin mis à jour avec succès !');
           setShowEditModal(false);
+          // Mettre à jour la liste des médecins après la mise à jour
           Axios.get('http://192.168.1.92:5000/api/medecin')
             .then((response) => {
               setData(response.data);
@@ -93,10 +96,12 @@ export default function Doctor({userRole}) {
     }
   };
 
+  // Fonction pour supprimer le médecin
   const handleDeleteDoctor = (doctorId) => {
     Axios.delete(`http://192.168.1.92:5000/api/medecin/${doctorId}`)
       .then((response) => {
         console.log('Médecin supprimé avec succès !');
+        // Mettre à jour la liste des médecins après la suppression
         Axios.get('http://192.168.1.92:5000/api/medecin')
           .then((response) => {
             setData(response.data);
@@ -110,6 +115,7 @@ export default function Doctor({userRole}) {
       });
   };
 
+  // Afficher un indicateur de chargement lorsque les données sont en cours de récupération
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -119,6 +125,7 @@ export default function Doctor({userRole}) {
     );
   }
 
+  // Afficher un message si aucune donnée de médecin n'est disponible
   if (data.length === 0) {
     return (
       <View style={styles.noDataContainer}>
@@ -130,10 +137,12 @@ export default function Doctor({userRole}) {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.rhMessageContainer}>
+        {/* Bouton pour afficher le formulaire d'ajout de médecin */}
         <TouchableOpacity onPress={() => setShowAddModal(true)}>
           <Text style={styles.rhMessage}>Ajouter un médecin</Text>
         </TouchableOpacity>
       </View>
+      {/* Modal pour ajouter un nouveau médecin */}
       <Modal visible={showAddModal} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Ajouter un nouveau médecin</Text>
@@ -160,10 +169,11 @@ export default function Doctor({userRole}) {
         </View>
       </Modal>
 
+      {/* Modal pour modifier le médecin */}
       <Modal visible={showEditModal} animationType="slide">
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Modifier le médecin</Text>
-          {/* Check if selectedDoctorData is not null before accessing its properties */}
+          {/* Vérifier si selectedDoctorData n'est pas nul avant d'accéder à ses propriétés */}
           {selectedDoctorData && (
             <>
               <TextInput
@@ -190,22 +200,24 @@ export default function Doctor({userRole}) {
           <Button title="Annuler" onPress={() => setShowEditModal(false)} />
         </View>
       </Modal>
+
       <List.Section>
-      {data.map((medecin) => (
-        <View key={medecin._id}>
-          <CustomCard
-            role="medecin"
-            name={`${medecin.nom} ${medecin.prenom}`}
-            email={medecin.email}
-            onEdit={() => handleEditDoctor(medecin._id, { nom: medecin.nom, prenom: medecin.prenom, email: medecin.email })}
-            onDelete={() => handleDeleteDoctor(medecin._id)}
-            userRole={userRole}
-          />
-          <Divider />
-        </View>
-      ))}
-    </List.Section>
-  </ScrollView>
+        {/* Afficher chaque médecin dans une carte personnalisée */}
+        {data.map((medecin) => (
+          <View key={medecin._id}>
+            <CustomCard
+              role="medecin"
+              name={`${medecin.nom} ${medecin.prenom}`}
+              email={medecin.email}
+              onEdit={() => handleEditDoctor(medecin._id, { nom: medecin.nom, prenom: medecin.prenom, email: medecin.email })}
+              onDelete={() => handleDeleteDoctor(medecin._id)}
+              userRole={userRole}
+            />
+            <Divider />
+          </View>
+        ))}
+      </List.Section>
+    </ScrollView>
   );
 }
 
@@ -229,10 +241,10 @@ const styles = StyleSheet.create({
   rhMessageContainer: {
     paddingVertical: 8,
     paddingHorizontal: 16,
-    backgroundColor: '#005EB8', // Couleur d'arrière-plan pour le message RH
+    backgroundColor: '#005EB8',
   },
   rhMessage: {
-    color: '#FFFFFF', // Couleur du texte pour le message RH
+    color: '#FFFFFF',
     textAlign: 'center',
   },
   modalContainer: {
@@ -256,3 +268,4 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
 });
+

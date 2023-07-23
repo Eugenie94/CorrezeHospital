@@ -23,9 +23,6 @@ export default function Rh() {
     return emailPattern.test(email);
   };
 
-
-  
-
   useEffect(() => {
     // Fonction pour récupérer le rôle de l'utilisateur à partir du AsyncStorage
     const getRoleFromAsyncStorage = async () => {
@@ -200,83 +197,83 @@ export default function Rh() {
                 placeholder="Email"
                 value={selectedRhData?.email}
                 onChangeText={(text) => setSelectedRhData({ ...selectedRhData, email: text })}
-                />
-              </>
-            )}
-            <Button title="Modifier" onPress={handleUpdateRh} />
-            <Button title="Annuler" onPress={() => setShowEditModal(false)} />
-          </View>
-        </Modal>
-  
-        <List.Section>
-          {data.map((rh) => (
-            <View key={rh._id}>
-              <CustomCard
-                role="rh"
-                name={`${rh.nom} ${rh.prenom}`}
-                email={rh.email}
-                onEdit={() => handleEditRh(rh._id, { nom: rh.nom, prenom: rh.prenom, email: rh.email})}
-                onDelete={() => handleDeleteRh(rh._id)}
-                userRole={userRole} // Passer userRole en tant que prop
               />
-              <Divider />
-            </View>
-          ))}
-        </List.Section>
-      </ScrollView>
-    );
-  }
-  
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      paddingVertical: 8,
-      paddingHorizontal: 16,
-    },
-    loadingContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    noDataContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: 16,
-    },
-    adminText: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginVertical: 16,
-    },
-    rhMessageContainer: {
-      paddingVertical: 8,
-      paddingHorizontal: 16,
-      backgroundColor: '#005EB8', // Couleur d'arrière-plan pour le message RH
-    },
-    rhMessage: {
-      color: '#FFFFFF', // Couleur du texte pour le message RH
-      textAlign: 'center',
-    },
-    modalContainer: {
-      flex: 1,
-      padding: 16,
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    modalTitle: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      marginBottom: 16,
-    },
-    input: {
-      width: '100%',
-      height: 40,
-      borderWidth: 1,
-      borderColor: '#ccc',
-      borderRadius: 8,
-      paddingHorizontal: 8,
-      marginBottom: 16,
-    },
-  });
+            </>
+          )}
+          <Button title="Modifier" onPress={handleUpdateRh} />
+          <Button title="Annuler" onPress={() => setShowEditModal(false)} />
+        </View>
+      </Modal>
+
+      <List.Section>
+        {data.map((rh) => (
+          <View key={rh._id}>
+            <CustomCard
+              role="rh"
+              name={`${rh.nom} ${rh.prenom}`}
+              email={rh.email}
+              onEdit={() => handleEditRh(rh._id, { nom: rh.nom, prenom: rh.prenom, email: rh.email })}
+              onDelete={() => handleDeleteRh(rh._id)}
+              userRole={userRole} // Passer userRole en tant que prop
+            />
+            <Divider />
+          </View>
+        ))}
+      </List.Section>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noDataContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  adminText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginVertical: 16,
+  },
+  rhMessageContainer: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#005EB8', // Couleur d'arrière-plan pour le message RH
+  },
+  rhMessage: {
+    color: '#FFFFFF', // Couleur du texte pour le message RH
+    textAlign: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    padding: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    marginBottom: 16,
+  },
+});

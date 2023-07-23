@@ -2,22 +2,23 @@ import React, { useState } from 'react';
 import { View, Text, KeyboardAvoidingView, Modal } from 'react-native';
 import { Button, TextInput, HelperText } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
- // Import AsyncStorage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Register from './Register';
 
-const Login = ({setUserRole} ) => {
-  const navigation = useNavigation(); // Use the useNavigation hook to access navigation prop
+const Login = ({ setUserRole }) => {
+  const navigation = useNavigation();
   const [error, setError] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [registerModalVisible, setRegisterModalVisible] = useState(false);
 
+  // Fonction pour afficher ou masquer la modal d'inscription
   const toggleRegisterModal = () => {
     setRegisterModalVisible(!registerModalVisible);
   };
 
+  // Fonction pour gérer la soumission du formulaire de connexion
   const handleSubmit = async () => {
     try {
       const response = await axios.post('http://192.168.1.92:5000/api/login', {
@@ -28,21 +29,21 @@ const Login = ({setUserRole} ) => {
       const { user } = response.data;
 
       try {
+        // Stocker les données de l'utilisateur dans le stockage local (AsyncStorage)
         await AsyncStorage.setItem('user', JSON.stringify(user));
-        setUserRole(user.role); // update the userRole state variable
-        // Check if the doctorId field exists in the user object
-      if (user.doctorId) {
-        await AsyncStorage.setItem('doctorId', user.doctorId); // Store the doctorId in AsyncStorage
-      }
+        setUserRole(user.role); // Appeler la fonction setUserRole pour définir le rôle de l'utilisateur dans l'application
+
+        if (user.doctorId) {
+          await AsyncStorage.setItem('doctorId', user.doctorId);
+        }
       } catch (error) {
-        console.error('Error storing data:', error);
+        console.error('Erreur lors de la sauvegarde des données:', error);
       }
-      // Redirect to the Home screen after successful login
-      navigation.navigate('Accueil'); 
+      navigation.navigate('Accueil'); // Naviguer vers l'écran d'accueil après la connexion réussie
 
     } catch (error) {
       console.error(error);
-      setError('Failed to log in. Please check your credentials.');
+      setError('Échec de la connexion. Veuillez vérifier vos identifiants.');
       setTimeout(() => {
         setError('');
       }, 5000);
@@ -70,13 +71,15 @@ const Login = ({setUserRole} ) => {
         />
         <HelperText type="error" visible={!!error}>
           {error}
-        </HelperText>  
-        <Button mode="contained" onPress={handleSubmit} style={{ marginTop: 10 }}>Log In</Button>
+        </HelperText>
+        <Button mode="contained" onPress={handleSubmit} style={{ marginTop: 10 }}>
+          Log In
+        </Button>
         <Button onPress={toggleRegisterModal} style={{ marginTop: 10 }}>
           Don't have an account? Sign up
         </Button>
       </View>
-      {/* Render the Register component as a modal */}
+      {/* Modal pour l'inscription */}
       <Modal
         animationType="slide"
         visible={registerModalVisible}
