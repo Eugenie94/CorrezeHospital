@@ -20,7 +20,7 @@ const Login = ({setUserRole} ) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post('http://192.168.1.92:5000/api/login', {
+      const response = await axios.post('http://192.168.1.44:5000/api/login', {
         email,
         password,
       });
@@ -28,7 +28,6 @@ const Login = ({setUserRole} ) => {
       const { user } = response.data;
 
       try {
-        await AsyncStorage.setItem('isLoggedIn', 'true');
         await AsyncStorage.setItem('user', JSON.stringify(user));
         setUserRole(user.role); // update the userRole state variable
         // Check if the doctorId field exists in the user object
@@ -37,14 +36,6 @@ const Login = ({setUserRole} ) => {
       }
       } catch (error) {
         console.error('Error storing data:', error);
-      }
-
-      const userJson = await AsyncStorage.getItem('user');
-  
-      if (userJson !== null) {
-        // Convertir la valeur JSON en objet JavaScript
-        const user = JSON.parse(userJson);
-        console.log(user.role)
       }
       // Redirect to the Home screen after successful login
       navigation.navigate('Accueil'); 

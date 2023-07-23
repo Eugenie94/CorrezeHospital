@@ -14,10 +14,7 @@ const rhSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  password: {
-    type: String,
-  },
-});
+},{versionKey : false});
 
 const RH = mongoose.model('Rh', rhSchema, 'Rh');
 

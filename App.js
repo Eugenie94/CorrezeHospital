@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, Text, Image } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,8 +13,11 @@ import Profile from './components/Profile';
 const Tab = createBottomTabNavigator();
 
 const HomeScreen = () => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    {/* Contenu de l'écran d'accueil */}
+  <View style={styles.container}>
+    <Image
+      source={require('./assets/19-ch-coeur-de-correze.png')}
+      style={styles.logo}
+    />
   </View>
 );
 
@@ -26,12 +29,8 @@ export default function App() {
     const fetchUserRole = async () => {
       try {
         const userRoleData = JSON.parse(await AsyncStorage.getItem('user'));
-        const login = JSON.parse(await AsyncStorage.getItem('isLoggedIn'));
         setUserRole(userRoleData.role)
-        console.log('User role:', userRoleData.role);
-        console.log('User login:', login); 
-      } catch (error) {
-        console.error('Error fetching user role:', error);
+      } catch (error) {    
       }
     };
 
@@ -65,7 +64,7 @@ export default function App() {
             />
             <Tab.Screen
               name="Patient"
-              component={Patients}
+              children={() => <Patients userRole={userRole} />}
               options={({ color }) => ({
                 tabBarIcon: ({ color }) => (
                   <Icon name="toolbox" size={30} color={color} />
@@ -74,7 +73,7 @@ export default function App() {
             />
             <Tab.Screen
               name="Médecins"
-              component={Doctor}
+              children={() => <Doctor userRole={userRole} />}
               options={({ color }) => ({
                 tabBarIcon: ({ color }) => (
                   <Icon name="doctor" size={30} color={color} />
@@ -116,7 +115,7 @@ export default function App() {
             />
             <Tab.Screen
               name="Patient"
-              component={Patients}
+              children={() => <Patients userRole={userRole} />}
               options={({ color }) => ({
                 tabBarIcon: ({ color }) => (
                   <Icon name="toolbox" size={30} color={color} />
@@ -163,4 +162,20 @@ export default function App() {
     </>
 
     
+
+    
   )}
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: '#FFFFFF', // Change the background color if needed
+    },
+    logo: {
+      width: 400,
+      height: 400,
+      resizeMode: 'contain', // Adjust the image's size and aspect ratio
+    },
+  });

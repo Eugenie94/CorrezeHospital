@@ -5,12 +5,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomCard from './CustomCard';
 import Axios from 'axios';
 
-export default function Patient() {
+export default function Patient({userRole}) {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [userRole, setUserRole] = useState('');
     const [showAddModal, setShowAddModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
+    const [showTreatmentModal, setShowTreatmentModal] = useState(false);
+    const [newMedicament, setNewMedicament] = useState('');
+    const [newDosage, setNewDosage] = useState('');
+    const [selectedPatientId, setSelectedPatientId] = useState(null);
     const [newPatientData, setNewPatientData] = useState({
         nom: '',
         prenom: '',
@@ -19,36 +22,19 @@ export default function Patient() {
         taille: '',
         email: '',
         mobile: '',
-        traitement: [
-            {
-                "medicament": "",
-                "dosageParJour": 3
-            },
-            {
-                "medicament": "",
-                "dosageParJour": 4
-            }
-        ]
+        traitement: [],
+        
     });
     const [selectedPatientData, setSelectedPatientData] = useState(null);
 
-    const Role = async () => {
-        try {
-            const userJson = await AsyncStorage.getItem('user');
-            if (userJson !== null) {
-                const user = JSON.parse(userJson);
-                setUserRole(user.role);
-            } else {
-                console.log('Aucune valeur pour la clé "user" dans AsyncStorage.');
-            }
-        } catch (error) {
-            console.log('Erreur lors de la récupération de la valeur :', error);
-            return null;
-        }
-    };
+
+    const validateEmail = (email) => {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(email);
+      };
 
     useEffect(() => {
-        Axios.get('http://192.168.1.92:5000/api/patient')
+        Axios.get('http://192.168.1.44:5000/api/patient')
             .then((response) => {
                 const responseData = Array.isArray(response.data)
                     ? response.data
@@ -60,24 +46,26 @@ export default function Patient() {
                 console.error('Erreur lors de la récupération des données :', error);
                 setLoading(false);
             });
-        Role(); // Appeler Role ici pour mettre à jour la valeur de userRole
+
     }, []);
 
     useEffect(() => {
-        Role();
     }, []);
 
-    console.log('UserRole:', userRole); // Vérifiez la valeur de userRole ici
 
     const handleAddPatient = () => {
+        if (!validateEmail(newPatientData.email)) {
+            console.error('Invalid email format');
+            return;
+          }
         // Envoyer les données du nouveau patient au backend pour l'ajouter dans la base de données
-        Axios.post('http://192.168.1.92:5000/api/patient', newPatientData)
+        Axios.post('http://192.168.1.44:5000/api/patient', newPatientData)
             .then((response) => {
                 console.log('Nouveau patient ajouté avec succès !');
                 // Fermer la modal après avoir ajouté le patient
                 setShowAddModal(false);
                 // Rafraîchir la liste des patients en rechargeant les données depuis le backend
-                Axios.get('http://192.168.1.92:5000/api/patient')
+                Axios.get('http://192.168.1.44:5000/api/patient')
                     .then((response) => {
                         const responseData = Array.isArray(response.data)
                             ? response.data
@@ -106,16 +94,19 @@ export default function Patient() {
     };
 
     const handleUpdatePatient = () => {
-        // Vérifier si selectedPatientData n'est pas null
+        if (selectedPatientData && !validateEmail(selectedPatientData.email)) {
+            console.error('Invalid email format');
+            return;
+          }
         if (selectedPatientData) {
             // Envoyer les données mises à jour au backend pour modifier le patient dans la base de données
-            Axios.put(`http://192.168.1.92:5000/api/patient/${selectedPatientData._id}`, selectedPatientData)
+            Axios.put(`http://192.168.1.44:5000/api/patient/${selectedPatientData._id}`, selectedPatientData)
                 .then((response) => {
                     console.log('Patient mis à jour avec succès !');
                     // Fermer la modal après avoir mis à jour le patient
                     setShowEditModal(false);
                     // Rafraîchir la liste des patients en rechargeant les données depuis le backend
-                    Axios.get('http://192.168.1.92:5000/api/patient')
+                    Axios.get('http://192.168.1.44:5000/api/patient')
                         .then((response) => {
                             const responseData = Array.isArray(response.data)
                                 ? response.data
@@ -135,11 +126,11 @@ export default function Patient() {
 
     const handleDeletePatient = (patientId) => {
         // Envoyer la demande de suppression au backend
-        Axios.delete(`http://192.168.1.92:5000/api/patient/${patientId}`)
+        Axios.delete(`http://192.168.1.44:5000/api/patient/${patientId}`)
             .then((response) => {
                 console.log('Patient supprimé avec succès !');
                 // Rafraîchir la liste des patients en rechargeant les données depuis le backend
-                Axios.get('http://192.168.1.92:5000/api/patient')
+                Axios.get('http://192.168.1.44:5000/api/patient')
                     .then((response) => {
                         const responseData = Array.isArray(response.data)
                             ? response.data
@@ -155,6 +146,70 @@ export default function Patient() {
                 // Afficher un message d'erreur ou effectuer toute autre action en cas d'échec de la suppression
             });
     };
+
+    const handleAddTreatment = () => {
+        // Vérifier si les champs du médicament et du dosage sont remplis
+        if (newMedicament.trim() === '' || newDosage.trim() === '') {
+          console.error('Veuillez remplir tous les champs du traitement.');
+          return;
+        }
+    
+        const newTreatment = {
+          medicament: newMedicament,
+          dosageParJour: parseInt(newDosage),
+        };
+        
+    
+        Axios.post(`http://192.168.1.44:5000/api/patient/${selectedPatientId}/add-treatment`, newTreatment)
+          .then((response) => {
+            console.log('Traitement ajouté avec succès !');
+            Axios.get(`http://192.168.1.44:5000/api/patient/${selectedPatientId}`)
+                .then((response) => {
+                    const updatedPatientData = response.data;
+                    const patientIndex = data.findIndex((patient) => patient._id === selectedPatientId);
+                    if (patientIndex !== -1) {
+                        const updatedData = [...data];
+                        updatedData[patientIndex] = updatedPatientData;
+                        setData(updatedData);
+                    }
+                    handleCloseModal(); 
+                })
+        })
+          .catch((error) => {
+            console.error('Erreur lors de l\'ajout du traitement :', error);
+          });
+    
+        // Réinitialiser les valeurs des champs de saisie
+        setNewMedicament('');
+        setNewDosage('');
+      };
+
+
+
+      const handleDeleteTreatment = (patientId, treatmentId) => {
+        const patientIndex = data.findIndex((patient) => patient._id === patientId);
+      
+        if (patientIndex === -1) {
+          console.error('Patient non trouvé');
+          return;
+        }
+      
+        const updatedPatients = [...data];
+        const patient = updatedPatients[patientIndex];
+      
+        // Filtrer le traitement en fonction de son ID
+        patient.traitement = patient.traitement.filter((treatment) => treatment._id !== treatmentId);
+      
+        Axios.put(`http://192.168.1.44:5000/api/patient/${patientId}`, patient)
+          .then((response) => {
+            console.log('Traitement supprimé avec succès !');
+            setData(updatedPatients); // Mettre à jour la liste des patients avec le traitement supprimé
+          })
+          .catch((error) => {
+            console.error('Erreur lors de la suppression du traitement :', error);
+          });
+      };
+
 
     if (loading) {
         return (
@@ -172,6 +227,16 @@ export default function Patient() {
             </View>
         );
     }
+
+    const handleOpenModal = (patientId) => {
+        setSelectedPatientId(patientId);
+        setShowTreatmentModal(true);
+      };
+      
+
+  const handleCloseModal = () => {
+    setShowTreatmentModal(false);
+  };
 
     return (
         <ScrollView style={styles.container}>
@@ -230,23 +295,6 @@ export default function Patient() {
                         placeholder="Mobile"
                         value={newPatientData.mobile}
                         onChangeText={(text) => setNewPatientData({ ...newPatientData, mobile: text })}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Traitement en cours"
-                        value={
-                            typeof newPatientData.traitement === 'string'
-                                ? newPatientData.traitement // Utiliser la chaîne JSON si elle est déjà au bon format
-                                : JSON.stringify(newPatientData.traitement) // Convertir l'objet en chaîne JSON
-                        }
-                        onChangeText={(text) => {
-                            try {
-                                setNewPatientData({ ...newPatientData, traitement: JSON.parse(text) }); // Reconvertir la chaîne en objet JSON
-                            } catch (error) {
-                                // Gérer les erreurs d'analyse JSON si nécessaire
-                                console.error('Erreur lors de la conversion JSON :', error);
-                            }
-                        }}
                     />
                     <Button title="Ajouter" onPress={handleAddPatient} />
                     <Button title="Annuler" onPress={() => setShowAddModal(false)} />
@@ -311,6 +359,28 @@ export default function Patient() {
                 </View>
             </Modal>
 
+             {/* Modal pour ajouter un traitement */}
+             <Modal visible={showTreatmentModal} animationType="slide">
+                <View style={styles.modalContainer}>
+                <Text style={styles.modalTitle}>Ajouter un nouveau traitement</Text>
+                <TextInput
+                    style={styles.input}
+                    placeholder="Nom du médicament"
+                    value={newMedicament}
+                    onChangeText={(text) => setNewMedicament(text)}
+                />
+                <TextInput
+                    style={styles.input}
+                    placeholder="Dosage par jour"
+                    value={newDosage}
+                    onChangeText={(text) => setNewDosage(text)}
+                    keyboardType="numeric"
+                />
+                <Button title="Ajouter" onPress={handleAddTreatment} />
+                <Button title="Annuler" onPress={handleCloseModal} />
+                </View>
+            </Modal>
+
             <List.Section>
                 {data.map((patient) => (
                     <View key={patient._id}>
@@ -326,6 +396,10 @@ export default function Patient() {
                             onEdit={() => handleEditPatient(patient._id, { /* les données mises à jour du patient */ })}
                             onDelete={() => handleDeletePatient(patient._id)}
                             userRole={userRole} // Passer userRole en tant que prop
+                             //traitements
+                             onAddTreatment={() => handleOpenModal(patient._id)}
+                             onDeleteTreatment={(patientId, treatmentId) => handleDeleteTreatment(patientId, treatmentId)} 
+                             patientId={patient._id} 
                         />
                         <Divider />
                     </View>
