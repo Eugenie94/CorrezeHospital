@@ -254,62 +254,62 @@ export default function Patient() {
             </Modal>
 
             <Modal visible={showEditModal} animationType="slide">
-  <View style={styles.modalContainer}>
-    <Text style={styles.modalTitle}>Modifier le patient</Text>
-    {/* Check if selectedPatientData is not null before accessing its properties */}
-    {selectedPatientData && (
-      <>
-        <TextInput
-          style={styles.input}
-          placeholder="Nom"
-          value={selectedPatientData?.nom}
-          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, nom: text })}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Prénom"
-          value={selectedPatientData?.prenom}
-          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, prenom: text })}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Âge"
-          keyboardType="numeric"
-          value={selectedPatientData?.age.toString()} // Convert age to string
-          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, age: text })}
-        />
-                <TextInput
-          style={styles.input}
-          placeholder="Taille"
-          keyboardType="numeric"
-          value={selectedPatientData?.taille.toString()} // Convert taille to string
-          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, taille: text })}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Poids"
-          keyboardType="numeric"
-          value={selectedPatientData?.poids.toString()} // Convert poids to string
-          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, poids: text })}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={selectedPatientData?.email}
-          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, email: text })}
-        />
-                <TextInput
-          style={styles.input}
-          placeholder="Mobile"
-          value={selectedPatientData?.mobile}
-          onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, mobile: text })}
-        />
-      </>
-    )}
-    <Button title="Modifier" onPress={handleUpdatePatient} />
-    <Button title="Annuler" onPress={() => setShowEditModal(false)} />
-  </View>
-</Modal>
+                <View style={styles.modalContainer}>
+                    <Text style={styles.modalTitle}>Modifier le patient</Text>
+                    {/* Check if selectedPatientData is not null before accessing its properties */}
+                    {selectedPatientData && (
+                        <>
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Nom"
+                                value={selectedPatientData?.nom}
+                                onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, nom: text })}
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Prénom"
+                                value={selectedPatientData?.prenom}
+                                onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, prenom: text })}
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Âge"
+                                keyboardType="numeric"
+                                value={selectedPatientData?.age.toString()} // Convert age to string
+                                onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, age: text })}
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Taille"
+                                keyboardType="numeric"
+                                value={selectedPatientData?.taille.toString()} // Convert taille to string
+                                onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, taille: text })}
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Poids"
+                                keyboardType="numeric"
+                                value={selectedPatientData?.poids.toString()} // Convert poids to string
+                                onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, poids: text })}
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Email"
+                                value={selectedPatientData?.email}
+                                onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, email: text })}
+                            />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Mobile"
+                                value={selectedPatientData?.mobile}
+                                onChangeText={(text) => setSelectedPatientData({ ...selectedPatientData, mobile: text })}
+                            />
+                        </>
+                    )}
+                    <Button title="Modifier" onPress={handleUpdatePatient} />
+                    <Button title="Annuler" onPress={() => setShowEditModal(false)} />
+                </View>
+            </Modal>
 
             <List.Section>
                 {data.map((patient) => (
@@ -325,6 +325,7 @@ export default function Patient() {
                             treatment={patient.traitement}
                             onEdit={() => handleEditPatient(patient._id, { /* les données mises à jour du patient */ })}
                             onDelete={() => handleDeletePatient(patient._id)}
+                            userRole={userRole} // Passer userRole en tant que prop
                         />
                         <Divider />
                     </View>

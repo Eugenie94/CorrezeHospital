@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Pressable, Text, Linking, Platform } from 'react-native';
+import { IconButton } from 'react-native-paper';
 
-export default function SendMessage() {
-  const message = 'Bonjour, ceci est un SMS envoyé depuis mon application React Native !';
-
+export default function SendMessage({ mobile, message }) {
   const handleSendSMS = () => {
     const smsUrl = Platform.select({
-      ios: `sms:${phoneNumber}&body=${encodeURIComponent(message)}`,
-      android: `sms:${phoneNumber}?body=${encodeURIComponent(message)}`,
+      ios: `sms:${mobile}&body=${encodeURIComponent(message)}`,
+      android: `sms:${mobile}?body=${encodeURIComponent(message)}`,
     });
 
     Linking.canOpenURL(smsUrl)
@@ -22,10 +21,10 @@ export default function SendMessage() {
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Pressable onPress={handleSendSMS} style={{ padding: 20, backgroundColor: 'blue', borderRadius: 10 }}>
-        <Text style={{ color: 'white', fontSize: 16 }}>Envoyer SMS</Text>
+    <View>
+      <Pressable onPress={handleSendSMS}>
+      <IconButton icon="message-text" size={20} onPress={handleSendSMS} />
       </Pressable>
     </View>
   );
-};
+}

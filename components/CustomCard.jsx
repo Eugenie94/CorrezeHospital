@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Title, Subheading, useTheme } from 'react-native-paper';
 import { IconButton } from 'react-native-paper';
-import Communications from 'react-native-communications'; // Import the Communications module
+import SendMessage from './SendMessage';
+import CalendarMedecin from './CalendarMedecin';
 
-export default function CustomCard({ role, name, age, taille, poids, treatment, email, mobile, onEdit, onDelete }) {
-  const [userRole, setUserRole] = useState('rh');
+export default function CustomCard({ role, name, age, taille, poids, treatment, email, mobile, onEdit, onDelete, userRole }) {
   const theme = useTheme();
-
-  const handleSendSMS = () => {
-    const message = 'Ceci est un SMS envoyé depuis mon application React Native !';
-    Communications.text(mobile, message); // Use Communications module to send SMS
-  };
+  const [showForm, setShowForm] = useState(false);
 
   const renderSpecificInfo = () => {
     if (role === 'patient') {
@@ -40,11 +36,16 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
     }
   };
 
+  const handleToggleForm = () => {
+    setShowForm(!showForm);
+  };
 
   return (
     <Card style={styles.cardContainer}>
       <Card.Content>
-        <Title style={{ color: theme.colors.primary }}>{name}</Title>
+        <View style={styles.headerContainer}>
+          <Title style={{ color: theme.colors.primary }}>{name}</Title>
+        </View>
         {renderSpecificInfo()}
       </Card.Content>
       {userRole === 'admin' ? (
@@ -52,11 +53,20 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
           <IconButton icon="pencil" size={20} onPress={() => onEdit()} />
           <IconButton icon="delete-outline" size={20} onPress={() => onDelete()} />
         </Card.Actions>
-      ) : userRole === 'rh' && role === 'patient' ? (
+      ) : userRole === 'medecin' && role === 'patient' ? (
         <Card.Actions style={styles.cardActions}>
-          <IconButton icon="message-text" size={20} onPress={handleSendSMS} />
+          <SendMessage mobile={mobile} />
+          <IconButton icon="calendar" size={24} color="black" onPress={handleToggleForm} />
         </Card.Actions>
       ) : null}
+{showForm && userRole === 'medecin' && role === 'patient' && (
+  <CalendarMedecin
+    visible={true}
+    medecinName={name}
+    medecinRole={userRole} // Passez le rôle du médecin ici
+    patientMobile={mobile}
+  />
+)}
     </Card>
   );
 }
@@ -67,6 +77,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginVertical: 8,
     elevation: 4,
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between', 
   },
   treatmentContainer: {
     marginTop: 8,
