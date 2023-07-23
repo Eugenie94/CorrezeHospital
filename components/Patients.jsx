@@ -22,21 +22,19 @@ export default function Patient({userRole}) {
         taille: '',
         email: '',
         mobile: '',
-        traitement: [
-            {
-                "medicament": "",
-                "dosageParJour": 3
-            },
-            {
-                "medicament": "",
-                "dosageParJour": 4
-            }
-        ]
+        traitement: [],
+        
     });
     const [selectedPatientData, setSelectedPatientData] = useState(null);
 
+
+    const validateEmail = (email) => {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailPattern.test(email);
+      };
+
     useEffect(() => {
-        Axios.get('http://192.168.1.33:5000/api/patient')
+        Axios.get('http://192.168.1.44:5000/api/patient')
             .then((response) => {
                 const responseData = Array.isArray(response.data)
                     ? response.data
@@ -56,14 +54,18 @@ export default function Patient({userRole}) {
 
 
     const handleAddPatient = () => {
+        if (!validateEmail(newPatientData.email)) {
+            console.error('Invalid email format');
+            return;
+          }
         // Envoyer les données du nouveau patient au backend pour l'ajouter dans la base de données
-        Axios.post('http://192.168.1.33:5000/api/patient', newPatientData)
+        Axios.post('http://192.168.1.44:5000/api/patient', newPatientData)
             .then((response) => {
                 console.log('Nouveau patient ajouté avec succès !');
                 // Fermer la modal après avoir ajouté le patient
                 setShowAddModal(false);
                 // Rafraîchir la liste des patients en rechargeant les données depuis le backend
-                Axios.get('http://192.168.1.33:5000/api/patient')
+                Axios.get('http://192.168.1.44:5000/api/patient')
                     .then((response) => {
                         const responseData = Array.isArray(response.data)
                             ? response.data
@@ -92,16 +94,19 @@ export default function Patient({userRole}) {
     };
 
     const handleUpdatePatient = () => {
-        // Vérifier si selectedPatientData n'est pas null
+        if (selectedPatientData && !validateEmail(selectedPatientData.email)) {
+            console.error('Invalid email format');
+            return;
+          }
         if (selectedPatientData) {
             // Envoyer les données mises à jour au backend pour modifier le patient dans la base de données
-            Axios.put(`http://192.168.1.33:5000/api/patient/${selectedPatientData._id}`, selectedPatientData)
+            Axios.put(`http://192.168.1.44:5000/api/patient/${selectedPatientData._id}`, selectedPatientData)
                 .then((response) => {
                     console.log('Patient mis à jour avec succès !');
                     // Fermer la modal après avoir mis à jour le patient
                     setShowEditModal(false);
                     // Rafraîchir la liste des patients en rechargeant les données depuis le backend
-                    Axios.get('http://192.168.1.33:5000/api/patient')
+                    Axios.get('http://192.168.1.44:5000/api/patient')
                         .then((response) => {
                             const responseData = Array.isArray(response.data)
                                 ? response.data
@@ -121,11 +126,11 @@ export default function Patient({userRole}) {
 
     const handleDeletePatient = (patientId) => {
         // Envoyer la demande de suppression au backend
-        Axios.delete(`http://192.168.1.33:5000/api/patient/${patientId}`)
+        Axios.delete(`http://192.168.1.44:5000/api/patient/${patientId}`)
             .then((response) => {
                 console.log('Patient supprimé avec succès !');
                 // Rafraîchir la liste des patients en rechargeant les données depuis le backend
-                Axios.get('http://192.168.1.33:5000/api/patient')
+                Axios.get('http://192.168.1.44:5000/api/patient')
                     .then((response) => {
                         const responseData = Array.isArray(response.data)
                             ? response.data
@@ -155,10 +160,20 @@ export default function Patient({userRole}) {
         };
         
     
-        Axios.post(`http://192.168.1.33:5000/api/patient/${selectedPatientId}/add-treatment`, newTreatment)
+        Axios.post(`http://192.168.1.44:5000/api/patient/${selectedPatientId}/add-treatment`, newTreatment)
           .then((response) => {
             console.log('Traitement ajouté avec succès !');
-            handleCloseModal();
+            Axios.get(`http://192.168.1.44:5000/api/patient/${selectedPatientId}`)
+                .then((response) => {
+                    const updatedPatientData = response.data;
+                    const patientIndex = data.findIndex((patient) => patient._id === selectedPatientId);
+                    if (patientIndex !== -1) {
+                        const updatedData = [...data];
+                        updatedData[patientIndex] = updatedPatientData;
+                        setData(updatedData);
+                    }
+                    handleCloseModal(); 
+                })
         })
           .catch((error) => {
             console.error('Erreur lors de l\'ajout du traitement :', error);
@@ -185,7 +200,7 @@ export default function Patient({userRole}) {
         // Filtrer le traitement en fonction de son ID
         patient.traitement = patient.traitement.filter((treatment) => treatment._id !== treatmentId);
       
-        Axios.put(`http://192.168.1.33:5000/api/patient/${patientId}`, patient)
+        Axios.put(`http://192.168.1.44:5000/api/patient/${patientId}`, patient)
           .then((response) => {
             console.log('Traitement supprimé avec succès !');
             setData(updatedPatients); // Mettre à jour la liste des patients avec le traitement supprimé
@@ -280,23 +295,6 @@ export default function Patient({userRole}) {
                         placeholder="Mobile"
                         value={newPatientData.mobile}
                         onChangeText={(text) => setNewPatientData({ ...newPatientData, mobile: text })}
-                    />
-                    <TextInput
-                        style={styles.input}
-                        placeholder="Traitement en cours"
-                        value={
-                            typeof newPatientData.traitement === 'string'
-                                ? newPatientData.traitement // Utiliser la chaîne JSON si elle est déjà au bon format
-                                : JSON.stringify(newPatientData.traitement) // Convertir l'objet en chaîne JSON
-                        }
-                        onChangeText={(text) => {
-                            try {
-                                setNewPatientData({ ...newPatientData, traitement: JSON.parse(text) }); // Reconvertir la chaîne en objet JSON
-                            } catch (error) {
-                                // Gérer les erreurs d'analyse JSON si nécessaire
-                                console.error('Erreur lors de la conversion JSON :', error);
-                            }
-                        }}
                     />
                     <Button title="Ajouter" onPress={handleAddPatient} />
                     <Button title="Annuler" onPress={() => setShowAddModal(false)} />
