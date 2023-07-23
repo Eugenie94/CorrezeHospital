@@ -42,7 +42,7 @@ export default function Rh() {
       }
     };
 
-    Axios.get('http://192.168.1.44:5000/api/rh')
+    Axios.get('http://192.168.1.92:5000/api/rh')
       .then((response) => {
         setData(response.data);
         setLoading(false);
@@ -60,11 +60,11 @@ export default function Rh() {
       console.error('Invalid email format');
       return;
     }
-    Axios.post('http://192.168.1.44:5000/api/rh', newRhData)
+    Axios.post('http://192.168.1.92:5000/api/rh', newRhData)
       .then((response) => {
         console.log('Nouveau RH ajouté avec succès !');
         setShowAddModal(false);
-        Axios.get('http://192.168.1.44:5000/api/rh')
+        Axios.get('http://192.168.1.92:5000/api/rh')
           .then((response) => {
             setData(response.data);
           })
@@ -91,10 +91,10 @@ export default function Rh() {
       return;
     }
     if (selectedRhData) {
-      Axios.put(`http://192.168.1.44:5000/api/rh/${selectedRhData._id}`, selectedRhData)
+      Axios.put(`http://192.168.1.92:5000/api/rh/${selectedRhData._id}`, selectedRhData)
         .then((response) => {
           setShowEditModal(false);
-          Axios.get('http://192.168.1.44:5000/api/rh')
+          Axios.get('http://192.168.1.92:5000/api/rh')
             .then((response) => {
               setData(response.data);
             })
@@ -109,9 +109,9 @@ export default function Rh() {
   };
 
   const handleDeleteRh = (rhId) => {
-    Axios.delete(`http://192.168.1.44:5000/api/rh/${rhId}`)
+    Axios.delete(`http://192.168.1.92:5000/api/rh/${rhId}`)
       .then((response) => {
-        Axios.get('http://192.168.1.44:5000/api/rh')
+        Axios.get('http://192.168.1.92:5000/api/rh')
           .then((response) => {
             setData(response.data);
           })

@@ -23,7 +23,7 @@ export default function SendMessage({ mobile, message }) {
   return (
     <View>
       <Pressable onPress={handleSendSMS}>
-      <IconButton icon="message-text" size={20} onPress={handleSendSMS} />
+        <IconButton icon="message-text" size={20} onPress={handleSendSMS} />
       </Pressable>
     </View>
   );

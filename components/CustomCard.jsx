@@ -8,6 +8,9 @@ import CalendarMedecin from './CalendarMedecin';
 export default function CustomCard({ role, name, age, taille, poids, treatment, email, mobile, onEdit, onDelete, userRole, onDeleteTreatment, onAddTreatment, patientId }) {
   const theme = useTheme();
   const [showForm, setShowForm] = useState(false);
+  const [startDate, setStartDate] = useState('');
+
+  const message = 'Bonjour, ceci est un SMS envoyé depuis mon application React Native !';
 
   const renderSpecificInfo = () => {
     if (role === 'patient') {
@@ -77,21 +80,22 @@ export default function CustomCard({ role, name, age, taille, poids, treatment, 
         </Card.Actions>
       ) : userRole === 'medecin' && role === 'patient' ? (
         <Card.Actions style={styles.cardActions}>
-          <SendMessage mobile={mobile} />
+          {/* Pass the message as a prop to the SendMessage component */}
+          <SendMessage mobile={mobile} message={message} />
           <IconButton icon="calendar" size={24} color="black" onPress={handleToggleForm} />
         </Card.Actions>
       ) : null}
-{showForm && userRole === 'medecin' && role === 'patient' && (
-  <CalendarMedecin
-    visible={true}
-    medecinName={name}
-    medecinRole={userRole} // Passez le rôle du médecin ici
-    patientMobile={mobile}
-  />
-)}
+      {showForm && userRole === 'medecin' && role === 'patient' && (
+        <CalendarMedecin
+          visible={true}
+          medecinConnecteName={name} // Ensure you are passing the correct prop (name) here
+          patientMobile={mobile}
+        />
+      )}
     </Card>
   );
 }
+
 
 const styles = StyleSheet.create({
   cardContainer: {
