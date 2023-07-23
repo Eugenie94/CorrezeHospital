@@ -26,7 +26,6 @@ export default function App() {
     const fetchUserRole = async () => {
       try {
         const userRoleData = JSON.parse(await AsyncStorage.getItem('user'));
-        const login = JSON.parse(await AsyncStorage.getItem('isLoggedIn'));
         setUserRole(userRoleData.role)
       } catch (error) {    
       }
@@ -71,7 +70,7 @@ export default function App() {
             />
             <Tab.Screen
               name="Médecins"
-              component={Doctor}
+              children={() => <Doctor userRole={userRole} />}
               options={({ color }) => ({
                 tabBarIcon: ({ color }) => (
                   <Icon name="doctor" size={30} color={color} />
